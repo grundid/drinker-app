@@ -21,10 +21,7 @@ import de.grundid.drinker.utils.DatedResponse;
 import de.grundid.drinker.utils.EmptyElement;
 import de.grundid.drinker.utils.IonLoaderHelper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class DrinksMenuActivity extends AppCompatActivity {
 
@@ -72,17 +69,20 @@ public class DrinksMenuActivity extends AppCompatActivity {
 	private void loadData(boolean forceReload) {
 		swipeRefreshLayout.setRefreshing(true);
 		new MenuLoader(this).getForDatedResponse("/drinksmenu/menu/" + placeId,
-				false, new IonLoaderHelper.OnDatedResponse<Menu>() {
+				forceReload, new IonLoaderHelper.OnDatedResponse<Menu>() {
 
 					@Override public void onDatedResponse(DatedResponse<Menu> response, Exception e) {
 						swipeRefreshLayout.setRefreshing(false);
 						if (e == null) {
 							menu = response.getContent();
 							setTitle(menu.getName());
-							List<Object> drinks = new ArrayList<Object>();
+							DrinkMenuComparator comparator = new DrinkMenuComparator();
+							List<Object> drinks = new ArrayList<>();
 							for (Map.Entry<Category, Set<MenuDrink>> entrySet : menu.getDrinks().entrySet()) {
 								drinks.add(entrySet.getKey());
-								drinks.addAll(entrySet.getValue());
+								SortedSet<MenuDrink> sortedSet = new TreeSet<>(comparator);
+								sortedSet.addAll(entrySet.getValue());
+								drinks.addAll(sortedSet);
 							}
 							if (!drinks.isEmpty()) {
 								drinks.add(new Footer(response.getDate(), menu.getLastUpdated()));

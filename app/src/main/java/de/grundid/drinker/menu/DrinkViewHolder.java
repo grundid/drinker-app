@@ -16,6 +16,7 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 	private NumberFormat volumeFormat = new DecimalFormat("0.0#'l'");
 	private TextView brand;
 	private TextView name;
+	private TextView description;
 	private TextView price;
 	private TextView volume;
 	private TextView pricePerVolume;
@@ -26,6 +27,7 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 		name = (TextView)itemView.findViewById(R.id.drinkName);
 		price = (TextView)itemView.findViewById(R.id.drinkPrice);
 		volume = (TextView)itemView.findViewById(R.id.drinkVolume);
+		description = (TextView)itemView.findViewById(R.id.drinkDescription);
 		pricePerVolume = (TextView)itemView.findViewById(R.id.drinkPricePerVolume);
 	}
 
@@ -35,12 +37,22 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 		name.setText(drink.getName());
 		price.setText(priceFormat.format((double)drink.getPrice() / 100));
 		volume.setVisibility(drink.getVolume() != null ? View.VISIBLE : View.GONE);
-		if (drink.getVolume() != null) {
-			volume.setText(volumeFormat.format((double)drink.getVolume() / 1000));
-			pricePerVolume.setText(priceFormat.format(((double)drink.getPrice() / 100) / ((double)drink.getVolume() / 100) )+" / 100ml");
-			pricePerVolume.setVisibility(View.VISIBLE);
-		} else {
+		if (Double.isNaN(drink.getPricePerVolume())) {
 			pricePerVolume.setVisibility(View.INVISIBLE);
+		}
+		else {
+			volume.setText(volumeFormat.format((double)drink.getVolume() / 1000));
+			pricePerVolume.setText(
+					priceFormat.format(drink.getPricePerVolume())
+							+ " / 100ml");
+			pricePerVolume.setVisibility(View.VISIBLE);
+		}
+		if (Utils.hasText(drink.getDescription())) {
+			description.setText(drink.getDescription());
+			description.setVisibility(View.VISIBLE);
+		}
+		else {
+			description.setVisibility(View.INVISIBLE);
 		}
 	}
 }

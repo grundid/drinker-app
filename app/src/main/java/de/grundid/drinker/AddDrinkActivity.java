@@ -11,6 +11,8 @@ import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 import de.grundid.android.utils.AndroidHelper;
 import de.grundid.drinker.menu.DrinkModel;
+import de.grundid.drinker.utils.DrinkModelHelper;
+import de.grundid.drinker.utils.PreferencesUtils;
 
 import java.util.*;
 
@@ -86,32 +88,38 @@ public class AddDrinkActivity extends AppCompatActivity {
 			drinkModel.setLocationId(locationId);
 			drinkModel.setName(drinkName.getText().toString());
 			drinkModel.setBrand(drinkBrand.getText().toString());
-			drinkModel.setVolume(parseDrinkVolume());
+			drinkModel.setVolume(DrinkModelHelper.parseDrinkVolume(drinkVolume.getText()));
 			drinkModel.setCategory(parseDrinkCategory());
-			drinkModel.setPrice(parseDrinkPrice());
+			drinkModel.setPrice(DrinkModelHelper.parseDrinkPrice(drinkPrice.getText()));
 			drinkModel.setDescription(drinkDescription.getText().toString());
-			Ion.with(this).load("POST", Config.BASE_URL + "/drink").setJsonPojoBody(drinkModel).asString()
-					.withResponse().setCallback(
-					new FutureCallback<Response<String>>() {
+			if (DrinkModelHelper.isDrinkModelValid(drinkModel)) {
+				Ion.with(this).load("POST", Config.BASE_URL + "/drink").
+						setHeader("X-User-UUID", PreferencesUtils.getUuid(this)).
+						setJsonPojoBody(drinkModel).asString()
+						.withResponse().setCallback(
+						new FutureCallback<Response<String>>() {
 
-						@Override public void onCompleted(Exception e, Response<String> result) {
-							saveInProcess = false;
-							if (e == null && result.getHeaders().code() == 200) {
-								handleSuccessfulSave();
+							@Override public void onCompleted(Exception e, Response<String> result) {
+								saveInProcess = false;
+								if (e == null && result.getHeaders().code() == 200) {
+									handleSuccessfulSave();
+								}
+								else {
+									Toast.makeText(AddDrinkActivity.this,
+											"Fehler beim Speichern: " + result.getHeaders().code(), Toast.LENGTH_SHORT)
+											.show();
+								}
 							}
-							else {
-								Toast.makeText(AddDrinkActivity.this,
-										"Fehler beim Speichern: " + result.getHeaders().code(), Toast.LENGTH_SHORT)
-										.show();
-							}
-						}
-					});
+						});
+			}
 		}
-	}
-
-	private boolean isDrinkModelValid(DrinkModel model) {
-
-		return false;
+		else {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Fehlende Angaben");
+			builder.setMessage("Bitte min. Name, Kategorie und Preis angeben.");
+			builder.setPositiveButton("OK", null);
+			builder.create().show();
+		}
 	}
 
 	private void handleSuccessfulSave() {
@@ -157,7 +165,6 @@ public class AddDrinkActivity extends AppCompatActivity {
 		}
 		return null;
 	}
-
 
 	@Override public boolean onCreateOptionsMenu(android.view.Menu menu) {
 		MenuInflater inflater = getMenuInflater();

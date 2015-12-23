@@ -4,12 +4,26 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class MenuDrink {
+
 	private String drinkId;
 	private String name;
 	private String brand;
 	private int price;
 	private Integer volume;
 	private String description;
+	private transient Double pricePerVolume;
+
+	public Double getPricePerVolume() {
+		if (pricePerVolume == null) {
+			if (volume != null) {
+				pricePerVolume = ((double)price / 100) / ((double)volume / 100);
+			}
+			else {
+				pricePerVolume = Double.NaN;
+			}
+		}
+		return pricePerVolume;
+	}
 
 	public String getName() {
 		return name;
@@ -58,5 +72,4 @@ public class MenuDrink {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
 }

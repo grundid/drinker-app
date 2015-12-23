@@ -66,6 +66,31 @@
         <item>1250l</item>
         <item>1500ml</item>
         <item>2000ml</item>
+        <item>0,1l</item>
+        <item>0,2l</item>
+        <item>0,25l</item>
+        <item>0,33l</item>
+        <item>0,4l</item>
+        <item>0,5l</item>
+        <item>0,6l</item>
+        <item>0,7l</item>
+        <item>0,75l</item>
+        <item>1l</item>
+        <item>1,25l</item>
+        <item>1,5l</item>
+        <item>2l</item>
+        <item>0.1l</item>
+        <item>0.2l</item>
+        <item>0.25l</item>
+        <item>0.33l</item>
+        <item>0.4l</item>
+        <item>0.5l</item>
+        <item>0.6l</item>
+        <item>0.7l</item>
+        <item>0.75l</item>
+        <item>1l</item>
+        <item>1.25l</item>
+        <item>1,5l</item>
+        <item>2l</item>
     </string-array>
-
 </resources>
