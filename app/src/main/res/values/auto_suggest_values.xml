@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="drinks">
+        <item>Pils</item>
+        <item>Fassbier</item>
+        <item>Wasser</item>
+        <item>Tafelwasser</item>
+        <item>Mineralwasser (still)</item>
+        <item>Mineralwasser (medium)</item>
+        <item>Mineralwasser</item>
+        <item>Cola</item>
+        <item>Cola light</item>
+        <item>Cola life</item>
+        <item>Hefe-Weizenbier</item>
+        <item>Weissbier</item>
+        <item>Pils alkoholfrei</item>
+        <item>Weizenbier alkoholfrei</item>
+        <item>Weizenbier leicht</item>
+        <item>Weizenbier kristial</item>
+        <item>Weizenbier dunkel</item>
+        <item>Aperol Sprizz</item>
+        <item>Hugo</item>
+        <item>Prosecco</item>
+        <item>Fanta</item>
+        <item>Orangensaft</item>
+        <item>Apfelsaft</item>
+        <item>Schorle versch. Sorten</item>
+        <item>Schorle</item>
+        <item>Sprite</item>
+        <item>Mezzo Mix</item>
+        <item>Bitter Lemon</item>
+        <item>Tonic Water</item>
+        <item>Ginger Ale</item>
+        <item>Ginder Beer</item>
+        <item>Grüner Tee</item>
+        <item>Kaffee</item>
+        <item>Espresso</item>
+        <item>Espresso doppio</item>
+        <item>Doppelter Espresso</item>
+        <item>Milchkaffee</item>
+        <item>Latte Macchiato</item>
+        <item>Café Latte</item>
+    </string-array>
+    <string-array name="brands">
+        <item>Benediktiner</item>
+        <item>König Pilsener</item>
+        <item>Apollinaris</item>
+        <item>Paulaner</item>
+        <item>Erdinger</item>
+        <item>PepsiCo</item>
+        <item>Coca-Cola</item>
+        <item>Fever Tree</item>
+        <item>Gerolsteiner</item>
+    </string-array>
+    <string-array name="volumes">
+        <item>100ml</item>
+        <item>200ml</item>
+        <item>250ml</item>
+        <item>330ml</item>
+        <item>400ml</item>
+        <item>500ml</item>
+        <item>600ml</item>
+        <item>700ml</item>
+        <item>750ml</item>
+        <item>1000ml</item>
+        <item>1250l</item>
+        <item>1500ml</item>
+        <item>2000ml</item>
+    </string-array>
+
+</resources>

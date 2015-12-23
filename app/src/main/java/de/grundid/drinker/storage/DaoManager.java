@@ -1,0 +1,70 @@
+package de.grundid.drinker.storage;
+
+import android.content.Context;
+import android.database.Cursor;
+import de.grundid.android.db.RowMapper;
+import de.grundid.android.db.SqlTemplate;
+import de.grundid.drinker.LocationModel;
+
+import java.util.ArrayList;
+import java.util.List;
+
+public class DaoManager {
+
+	private DrinkMenuDatabase helper;
+
+	private DaoManager(DrinkMenuDatabase helper) {
+		this.helper = helper;
+	}
+
+	private DaoManager(Context context) {
+		this(new DrinkMenuDatabase(context));
+	}
+
+	public DrinkMenuDatabase getHelper() {
+		return helper;
+	}
+
+	public static DaoManager with(Context context) {
+		return new DaoManager(context);
+	}
+
+	public static <T> List<T> mapRowsFromCursor(Cursor cursor, RowMapper<T> rowMapper) {
+		List<T> items = new ArrayList<T>();
+		try {
+			while (cursor.moveToNext()) {
+				items.add(rowMapper.mapRow(cursor, 0));
+			}
+		}
+		finally {
+			if (cursor != null) {
+				cursor.close();
+			}
+		}
+		return items;
+	}
+
+	public static void appendSelectColumns(StringBuilder sb, String[] selectColumns) {
+		for (String column : selectColumns) {
+			if (sb.length() > 0)
+				sb.append(", ");
+			sb.append(column);
+		}
+	}
+
+	public void incLocationVisitCount(String placeId) {
+		helper.writeSqlTemplate(new IncLocationVisitCountQuery(placeId));
+	}
+
+	public Location selectLocation(String placeId) {
+		return helper.readSqlTemplate(new SelectLocationQuery(placeId));
+	}
+
+	public List<Location> selectAllLocations() {
+		return helper.readSqlTemplate(new SelectAllLocationsQuery());
+	}
+
+	public void insertLocation(Location location) {
+		helper.writeSqlTemplate(new InsertLocation(location));
+	}
+}
