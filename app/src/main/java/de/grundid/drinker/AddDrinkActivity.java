@@ -112,13 +112,18 @@ public class AddDrinkActivity extends AppCompatActivity {
 							}
 						});
 			}
-		}
-		else {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Fehlende Angaben");
-			builder.setMessage("Bitte min. Name, Kategorie und Preis angeben.");
-			builder.setPositiveButton("OK", null);
-			builder.create().show();
+			else {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle("Fehlende Angaben");
+				builder.setMessage("Bitte min. Name, Kategorie und Preis angeben.");
+				builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+
+					@Override public void onClick(DialogInterface dialog, int which) {
+						saveInProcess = false;
+					}
+				});
+				builder.create().show();
+			}
 		}
 	}
 

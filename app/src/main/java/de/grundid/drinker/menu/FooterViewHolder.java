@@ -7,11 +7,12 @@ import de.grundid.drinker.R;
 import org.w3c.dom.Text;
 
 import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class FooterViewHolder extends RecyclerView.ViewHolder {
 
-	private DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.SHORT);
+	private DateFormat dateFormat = new SimpleDateFormat("dd.MM.yyyy, HH:mm:ss");
 	private TextView responseDate;
 	private TextView menuDate;
 
