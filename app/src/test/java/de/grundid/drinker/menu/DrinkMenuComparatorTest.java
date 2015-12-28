@@ -1,5 +1,6 @@
 package de.grundid.drinker.menu;
 
+import de.grundid.drinker.Category;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -19,6 +20,7 @@ public class DrinkMenuComparatorTest {
 
 	private MenuDrink create(String name, String drinkId, Integer price, Integer volume) {
 		MenuDrink menuDrink = new MenuDrink();
+		menuDrink.setCategory("beer");
 		menuDrink.setName(name);
 		menuDrink.setDrinkId(drinkId);
 		menuDrink.setPrice(price);
