@@ -7,4 +7,5 @@
     <string name="empty_state_drinksmenu">Für diese Location gibt es noch keine erfassten Getränke. Klicke auf das + und
         füge doch ein Getränk dazu.
     </string>
+    <string name="action_edit">Bearbeiten</string>
 </resources>

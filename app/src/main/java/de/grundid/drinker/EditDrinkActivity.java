@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.InputType;
+import android.text.method.DigitsKeyListener;
 import android.view.*;
 import android.widget.*;
 import com.koushikdutta.async.future.FutureCallback;
@@ -11,13 +13,20 @@ import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 import de.grundid.android.utils.AndroidHelper;
 import de.grundid.drinker.menu.DrinkModel;
+import de.grundid.drinker.menu.MenuDrink;
 import de.grundid.drinker.utils.DrinkModelHelper;
 import de.grundid.drinker.utils.PreferencesUtils;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
+import java.text.NumberFormat;
 import java.util.*;
 
-public class AddDrinkActivity extends AppCompatActivity {
+public class EditDrinkActivity extends AppCompatActivity {
 
+	public static final String EXTRA_LOCATION_ID = "EXTRA_LOCATION_ID";
+	public static final String EXTRA_DRINK = "EXTRA_DRINK";
+	public static final String EXTRA_SINGLE_DRINK = "EXTRA_SINGLE_DRINK";
 	private AutoCompleteTextView drinkName;
 	private AutoCompleteTextView drinkBrand;
 	private EditText drinkPrice;
@@ -27,19 +36,37 @@ public class AddDrinkActivity extends AppCompatActivity {
 	private String locationId;
 	private boolean saveInProcess = false;
 	private boolean saveMultiple = false;
+	private MenuDrink menuDrink;
+
+	public class NumericDigitsKeyListener extends DigitsKeyListener {
+
+		@Override
+		protected char[] getAcceptedChars() {
+			char[] acceptedCharacters = new char[] {
+					'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',',
+					new DecimalFormatSymbols().getDecimalSeparator() };
+			return acceptedCharacters;
+		}
+
+		public int getInputType() {
+			return InputType.TYPE_CLASS_NUMBER | InputType.TYPE_NUMBER_FLAG_DECIMAL;
+		}
+	}
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_add_drink);
 		setTitle("Getränk erfassen");
-		locationId = getIntent().getStringExtra("LOCATION_ID");
+		locationId = getIntent().getStringExtra(EXTRA_LOCATION_ID);
 		categorySpinner = (Spinner)findViewById(R.id.category_spinner);
 		categorySpinner.setAdapter(createCategoryAdapter());
 		drinkName = (AutoCompleteTextView)findViewById(R.id.drinkName);
 		drinkBrand = (AutoCompleteTextView)findViewById(R.id.drinkBrand);
 		drinkPrice = (EditText)findViewById(R.id.drinkPrice);
+		drinkPrice.setKeyListener(new NumericDigitsKeyListener());
 		drinkVolume = (AutoCompleteTextView)findViewById(R.id.drinkVolume);
+		drinkVolume.setKeyListener(new NumericDigitsKeyListener());
 		drinkDescription = (EditText)findViewById(R.id.drinkDescription);
 		AndroidHelper.setupFinishListener(this, R.id.finishButton);
 		findViewById(R.id.finishButton).setVisibility(View.INVISIBLE);
@@ -50,6 +77,28 @@ public class AddDrinkActivity extends AppCompatActivity {
 			}
 		});
 		initSuggestions();
+		initFieldsFromMenuDrink();
+	}
+
+	private void initFieldsFromMenuDrink() {
+		menuDrink = getIntent().getParcelableExtra(EXTRA_DRINK);
+		if (menuDrink != null) {
+			NumberFormat priceFormat = new DecimalFormat("0.0#");
+			drinkName.setText(menuDrink.getName());
+			drinkBrand.setText(menuDrink.getBrand());
+			drinkDescription.setText(menuDrink.getDescription());
+			drinkPrice.setText(priceFormat.format((double)menuDrink.getPrice() / 100));
+			if (menuDrink.getVolume() != null)
+				drinkVolume.setText("" + menuDrink.getVolume());
+			int counter = 0;
+			for (Category cat : Category.values()) {
+				if (cat.name().equals(menuDrink.getCategory())) {
+					categorySpinner.setSelection(counter);
+				}
+				counter++;
+			}
+			categorySpinner.requestFocus();
+		}
 	}
 
 	private StringListAdapter createCategoryAdapter() {
@@ -93,7 +142,9 @@ public class AddDrinkActivity extends AppCompatActivity {
 			drinkModel.setPrice(DrinkModelHelper.parseDrinkPrice(drinkPrice.getText()));
 			drinkModel.setDescription(drinkDescription.getText().toString());
 			if (DrinkModelHelper.isDrinkModelValid(drinkModel)) {
-				Ion.with(this).load("POST", Config.BASE_URL + "/drink").
+				String method = menuDrink != null ? "PUT" : "POST";
+				String path = menuDrink != null ? "/drink/" + menuDrink.getDrinkId() : "/drink";
+				Ion.with(this).load(method, Config.BASE_URL + path).
 						setHeader("X-User-UUID", PreferencesUtils.getUuid(this)).
 						setJsonPojoBody(drinkModel).asString()
 						.withResponse().setCallback(
@@ -105,7 +156,7 @@ public class AddDrinkActivity extends AppCompatActivity {
 									handleSuccessfulSave();
 								}
 								else {
-									Toast.makeText(AddDrinkActivity.this,
+									Toast.makeText(EditDrinkActivity.this,
 											"Fehler beim Speichern: " + result.getHeaders().code(), Toast.LENGTH_SHORT)
 											.show();
 								}
@@ -135,22 +186,27 @@ public class AddDrinkActivity extends AppCompatActivity {
 			resetForm();
 		}
 		else {
-			AlertDialog.Builder builder = new AlertDialog.Builder(this);
-			builder.setTitle("Mehrere Getränke?").setMessage("Möchtest du weitere Getränke erfassen?")
-					.setPositiveButton(
-							"Ja", new DialogInterface.OnClickListener() {
+			if (menuDrink == null) {
+				AlertDialog.Builder builder = new AlertDialog.Builder(this);
+				builder.setTitle("Mehrere Getränke?").setMessage("Möchtest du weitere Getränke erfassen?")
+						.setPositiveButton(
+								"Ja", new DialogInterface.OnClickListener() {
 
-								@Override public void onClick(DialogInterface dialog, int which) {
-									saveMultiple = true;
-									findViewById(R.id.finishButton).setVisibility(View.VISIBLE);
-									resetForm();
-								}
-							}).setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+									@Override public void onClick(DialogInterface dialog, int which) {
+										saveMultiple = true;
+										findViewById(R.id.finishButton).setVisibility(View.VISIBLE);
+										resetForm();
+									}
+								}).setNegativeButton("Nein", new DialogInterface.OnClickListener() {
 
-				@Override public void onClick(DialogInterface dialog, int which) {
-					finish();
-				}
-			}).create().show();
+					@Override public void onClick(DialogInterface dialog, int which) {
+						finish();
+					}
+				}).create().show();
+			}
+			else {
+				finish();
+			}
 		}
 	}
 

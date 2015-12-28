@@ -2,6 +2,7 @@ package de.grundid.drinker.menu;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import de.grundid.drinker.R;
 import de.grundid.drinker.Utils;
@@ -20,6 +21,7 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 	private TextView price;
 	private TextView volume;
 	private TextView pricePerVolume;
+	private ImageButton moreButton;
 
 	public DrinkViewHolder(View itemView) {
 		super(itemView);
@@ -29,6 +31,7 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 		volume = (TextView)itemView.findViewById(R.id.drinkVolume);
 		description = (TextView)itemView.findViewById(R.id.drinkDescription);
 		pricePerVolume = (TextView)itemView.findViewById(R.id.drinkPricePerVolume);
+		moreButton = (ImageButton)itemView.findViewById(R.id.moreActions);
 	}
 
 	public void update(MenuDrink drink) {
@@ -54,5 +57,9 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 		else {
 			description.setVisibility(View.INVISIBLE);
 		}
+	}
+
+	public ImageButton getMoreButton() {
+		return moreButton;
 	}
 }

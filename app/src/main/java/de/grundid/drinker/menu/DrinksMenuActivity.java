@@ -9,21 +9,17 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import com.google.gson.reflect.TypeToken;
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.Response;
-import de.grundid.drinker.AddDrinkActivity;
+import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.Category;
+import de.grundid.drinker.ItemClickListener;
 import de.grundid.drinker.R;
 import de.grundid.drinker.storage.DaoManager;
 import de.grundid.drinker.utils.DatedResponse;
-import de.grundid.drinker.utils.EmptyElement;
 import de.grundid.drinker.utils.IonLoaderHelper;
 
 import java.util.*;
 
-public class DrinksMenuActivity extends AppCompatActivity {
+public class DrinksMenuActivity extends AppCompatActivity implements ItemClickListener<MenuDrink> {
 
 	private RecyclerView recyclerView;
 	private Menu menu;
@@ -43,8 +39,8 @@ public class DrinksMenuActivity extends AppCompatActivity {
 
 			@Override
 			public void onClick(View view) {
-				Intent addDrinkIntent = new Intent(DrinksMenuActivity.this, AddDrinkActivity.class);
-				addDrinkIntent.putExtra("LOCATION_ID", menu.getLocationId());
+				Intent addDrinkIntent = new Intent(DrinksMenuActivity.this, EditDrinkActivity.class);
+				addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, menu.getLocationId());
 				startActivity(addDrinkIntent);
 			}
 		});
@@ -77,19 +73,30 @@ public class DrinksMenuActivity extends AppCompatActivity {
 							menu = response.getContent();
 							setTitle(menu.getName());
 							DrinkMenuComparator comparator = new DrinkMenuComparator();
+							List<MenuDrink> sortedDrinks = new ArrayList<>(menu.getDrinks());
+							Collections.sort(sortedDrinks, comparator);
 							List<Object> drinks = new ArrayList<>();
-							for (Map.Entry<Category, Set<MenuDrink>> entrySet : menu.getDrinks().entrySet()) {
-								drinks.add(entrySet.getKey());
-								SortedSet<MenuDrink> sortedSet = new TreeSet<>(comparator);
-								sortedSet.addAll(entrySet.getValue());
-								drinks.addAll(sortedSet);
+							String lastCategory = "";
+							for (MenuDrink menuDrink : sortedDrinks) {
+								if (!lastCategory.equals(menuDrink.getCategory())) {
+									drinks.add(Category.valueOf(menuDrink.getCategory()));
+								}
+								drinks.add(menuDrink);
+								lastCategory = menuDrink.getCategory();
 							}
 							if (!drinks.isEmpty()) {
 								drinks.add(new Footer(response.getDate(), menu.getLastUpdated()));
 							}
-							recyclerView.setAdapter(new DrinkAdapter(drinks));
+							recyclerView.setAdapter(new DrinkAdapter(drinks, DrinksMenuActivity.this));
 						}
 					}
 				});
+	}
+
+	@Override public void onItemClick(MenuDrink item) {
+		Intent addDrinkIntent = new Intent(DrinksMenuActivity.this, EditDrinkActivity.class);
+		addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, menu.getLocationId());
+		addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_DRINK, item);
+		startActivityForResult(addDrinkIntent, 1000);
 	}
 }

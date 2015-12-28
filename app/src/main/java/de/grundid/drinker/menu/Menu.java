@@ -3,6 +3,7 @@ package de.grundid.drinker.menu;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import de.grundid.drinker.Category;
 
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -14,7 +15,7 @@ public class Menu {
 	private String locationId;
 	private String address;
 	private long lastUpdated;
-	private Map<Category, Set<MenuDrink>> drinks;
+	private List<MenuDrink> drinks;
 
 	public String getLocationId() {
 		return locationId;
@@ -56,12 +57,11 @@ public class Menu {
 		this.address = address;
 	}
 
-	public Map<Category, Set<MenuDrink>> getDrinks() {
+	public List<MenuDrink> getDrinks() {
 		return drinks;
 	}
 
-	public void setDrinks(
-			Map<Category, Set<MenuDrink>> drinks) {
+	public void setDrinks(List<MenuDrink> drinks) {
 		this.drinks = drinks;
 	}
 }

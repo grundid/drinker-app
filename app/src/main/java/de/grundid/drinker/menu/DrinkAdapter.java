@@ -1,9 +1,13 @@
 package de.grundid.drinker.menu;
 
+import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.view.ViewGroup;
 import de.grundid.drinker.Category;
+import de.grundid.drinker.ItemClickListener;
 import de.grundid.drinker.R;
 import de.grundid.drinker.utils.EmptyElement;
 import de.grundid.drinker.utils.EmptyStateAdapter;
@@ -16,9 +20,11 @@ public class DrinkAdapter extends EmptyStateAdapter {
 	private static final int TYPE_SECTION = 1;
 	private static final int TYPE_DRINK = 2;
 	private static final int TYPE_FOOTER = 3;
+	private final ItemClickListener<MenuDrink> itemClickListener;
 
-	public DrinkAdapter(List<Object> drinks) {
+	public DrinkAdapter(List<Object> drinks, ItemClickListener<MenuDrink> itemClickListener) {
 		super(drinks, R.string.empty_state_drinksmenu);
+		this.itemClickListener = itemClickListener;
 	}
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -39,7 +45,24 @@ public class DrinkAdapter extends EmptyStateAdapter {
 
 	@Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 		if (holder instanceof DrinkViewHolder) {
-			((DrinkViewHolder)holder).update((MenuDrink)elements.get(position));
+			DrinkViewHolder drinkViewHolder = (DrinkViewHolder)holder;
+			final MenuDrink menuDrink = (MenuDrink)elements.get(position);
+			drinkViewHolder.update(menuDrink);
+			drinkViewHolder.getMoreButton().setOnClickListener(new View.OnClickListener() {
+
+				@Override public void onClick(View v) {
+					PopupMenu popup = new PopupMenu(v.getContext(), v);
+					popup.inflate(R.menu.drink_menu);
+					popup.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+
+						@Override public boolean onMenuItemClick(MenuItem item) {
+							itemClickListener.onItemClick(menuDrink);
+							return true;
+						}
+					});
+					popup.show();
+				}
+			});
 		}
 		else if (holder instanceof SectionViewHolder) {
 			((SectionViewHolder)holder).update((Category)elements.get(position));
