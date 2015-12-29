@@ -1,21 +1,19 @@
 package de.grundid.drinker;
 
 import android.app.Activity;
-import android.content.Intent;
-import com.google.android.gms.location.places.Place;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
-import de.grundid.drinker.menu.DrinksMenuActivity;
 import de.grundid.drinker.menu.Menu;
+import de.grundid.drinker.utils.PlaceWrapper;
 
 public class PlaceResponseHandler implements FutureCallback<Response<Menu>> {
 
 	private Activity activity;
-	private Place place;
+	private PlaceWrapper place;
 	private ItemClickListener<String> placeIdClickListener;
 
-	public PlaceResponseHandler(Activity activity, Place place, ItemClickListener<String> placeIdClickListener) {
+	public PlaceResponseHandler(Activity activity, PlaceWrapper place, ItemClickListener<String> placeIdClickListener) {
 		this.activity = activity;
 		this.place = place;
 		this.placeIdClickListener = placeIdClickListener;
@@ -30,13 +28,13 @@ public class PlaceResponseHandler implements FutureCallback<Response<Menu>> {
 		}
 	}
 
-	private void createNewPlace(final Place place) {
+	private void createNewPlace(final PlaceWrapper place) {
 		LocationModel locationModel = new LocationModel();
 		locationModel.setPlaceId(place.getId());
 		locationModel.setName(place.getName().toString());
 		locationModel.setAddress(place.getAddress().toString());
-		locationModel.setLatitude(place.getLatLng().latitude);
-		locationModel.setLongitude(place.getLatLng().longitude);
+		locationModel.setLatitude(place.getLat());
+		locationModel.setLongitude(place.getLon());
 		Ion.with(activity).load("POST", Config.BASE_URL + "/location").setJsonPojoBody(locationModel).asString()
 				.withResponse().setCallback(
 				new FutureCallback<Response<String>>() {
@@ -48,6 +46,4 @@ public class PlaceResponseHandler implements FutureCallback<Response<Menu>> {
 					}
 				});
 	}
-
-
 }

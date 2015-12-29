@@ -3,8 +3,7 @@ package de.grundid.drinker.storage;
 import android.content.Context;
 import android.database.Cursor;
 import de.grundid.android.db.RowMapper;
-import de.grundid.android.db.SqlTemplate;
-import de.grundid.drinker.LocationModel;
+import de.grundid.drinker.utils.PlaceWrapper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -66,5 +65,19 @@ public class DaoManager {
 
 	public void insertLocation(Location location) {
 		helper.writeSqlTemplate(new InsertLocation(location));
+	}
+
+	public void savePlace(PlaceWrapper place) {
+		Location location = selectLocation(place.getId());
+		if (location == null) {
+			location = new Location();
+			location.setPlaceId(place.getId());
+			location.setName(place.getName());
+			location.setAddress(place.getAddress());
+			location.setLatitude(place.getLat());
+			location.setLongitude(place.getLon());
+			location.setVisits(0);
+			insertLocation(location);
+		}
 	}
 }

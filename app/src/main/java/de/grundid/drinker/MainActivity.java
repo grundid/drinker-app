@@ -1,5 +1,7 @@
 package de.grundid.drinker;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -18,24 +20,23 @@ import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.reflect.TypeToken;
 import com.koushikdutta.ion.Ion;
+import de.grundid.drinker.addplace.AddPlaceActivity;
+import de.grundid.drinker.addplace.NewPlace;
 import de.grundid.drinker.location.LocationAdapter;
 import de.grundid.drinker.menu.DrinksMenuActivity;
 import de.grundid.drinker.menu.Menu;
 import de.grundid.drinker.storage.DaoManager;
-import de.grundid.drinker.storage.Location;
 import de.grundid.drinker.utils.AnalyticsUtils;
+import de.grundid.drinker.utils.PlaceWrapper;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements ItemClickListener<String> {
 
 	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
-	private static final Set<Integer> SUPPORTED_TYPES = new HashSet<>(Arrays.asList(
-			Place.TYPE_BAKERY, Place.TYPE_BAR, Place.TYPE_CAFE, Place.TYPE_BOWLING_ALLEY, Place.TYPE_CASINO,
-			Place.TYPE_GAS_STATION, Place.TYPE_HOSPITAL, Place.TYPE_MEAL_TAKEAWAY, Place.TYPE_MOVIE_THEATER,
-			Place.TYPE_NIGHT_CLUB, Place.TYPE_RESTAURANT, Place.TYPE_SHOPPING_MALL, Place.TYPE_TRAIN_STATION,
-			Place.TYPE_UNIVERSITY));
 	private static final int PLACE_PICKER_REQUEST = 1;
+	private static final int NEW_LOCATION_REQUEST = 2;
 	private RecyclerView recyclerView;
 
 	@Override
@@ -61,36 +62,58 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (requestCode == PLACE_PICKER_REQUEST) {
 			if (resultCode == RESULT_OK) {
-				Place place = PlacePicker.getPlace(data, this);
-				if (!Collections.disjoint(SUPPORTED_TYPES, place.getPlaceTypes())) {
-					savePlace(place);
-					Ion.with(this).load(Config.BASE_URL + "/menu/" + place.getId())
-							.as(new TypeToken<Menu>() {
-							})
-							.withResponse()
-							.setCallback(new PlaceResponseHandler(this, place, this));
+				final Place place = PlacePicker.getPlace(data, this);
+				if (!Collections.disjoint(Config.SUPPORTED_TYPES, place.getPlaceTypes())) {
+					handleSelectedPlace(new PlaceWrapper(place));
 				}
 				else {
-					String toastMsg = String.format("Dieser Ort wird nicht unterstützt.", place.getName());
-					Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+					if (!Collections.disjoint(Config.NEW_SUPPORTED_TYPES, place.getPlaceTypes())) {
+						createNewPlace(place);
+					}
+					else {
+						Log.i("DRINKER", "Place type: " + place.getPlaceTypes());
+						String toastMsg = "Dieser Ort wird nicht unterstützt.";
+						Toast.makeText(this, toastMsg, Toast.LENGTH_LONG).show();
+					}
 				}
+			}
+		}
+		else if (requestCode == NEW_LOCATION_REQUEST) {
+			if (resultCode == RESULT_OK) {
+				PlaceWrapper place = data.getParcelableExtra("PLACE");
+				handleSelectedPlace(place);
 			}
 		}
 	}
 
-	private void savePlace(Place place) {
-		DaoManager daoManager = DaoManager.with(this);
-		Location location = daoManager.selectLocation(place.getId());
-		if (location == null) {
-			location = new Location();
-			location.setPlaceId(place.getId());
-			location.setName(place.getName().toString());
-			location.setAddress(place.getAddress().toString());
-			location.setLatitude(place.getLatLng().latitude);
-			location.setLongitude(place.getLatLng().longitude);
-			location.setVisits(0);
-			daoManager.insertLocation(location);
-		}
+	private void createNewPlace(final Place place) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Neue Location?").setMessage(
+				"An dieser Stelle ist keine Location vermerkt. "
+						+ "Möchtest du eine neue Location anlegen?")
+				.setPositiveButton(
+						"Ja", new DialogInterface.OnClickListener() {
+
+							@Override public void onClick(DialogInterface dialog, int which) {
+								Intent intent = new Intent(MainActivity.this, AddPlaceActivity.class);
+								intent.putExtra(AddPlaceActivity.EXTRA_NEW_PLACE,
+										new NewPlace(place.getAddress(), place.getLatLng().latitude,
+												place.getLatLng().longitude));
+								intent.setFlags(
+										Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
+								startActivityForResult(intent, NEW_LOCATION_REQUEST);
+							}
+						}).setNegativeButton("Nein", null).create().show();
+	}
+
+	private void handleSelectedPlace(PlaceWrapper place) {
+		DaoManager.with(this).savePlace(place);
+		Ion.with(this).load(Config.BASE_URL + "/menu/" + place.getId())
+				.as(new TypeToken<Menu>() {
+
+				})
+				.withResponse()
+				.setCallback(new PlaceResponseHandler(this, place, this));
 	}
 
 	private void initFab() {
@@ -99,6 +122,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 
 			@Override public void onClick(View v) {
 				PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
+
 				try {
 					startActivityForResult(builder.build(MainActivity.this), PLACE_PICKER_REQUEST);
 				}

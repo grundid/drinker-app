@@ -10,4 +10,10 @@
         füge doch ein Getränk dazu.
     </string>
     <string name="action_edit">Bearbeiten</string>
+    <string name="title_activity_add_place">AddPlaceActivity</string>
+    <string name="TYPE_BAR">Bar</string>
+    <string name="TYPE_CAFE">Café</string>
+    <string name="TYPE_MOVIE_THEATER">Kino</string>
+    <string name="TYPE_NIGHT_CLUB">Nachtklub</string>
+    <string name="TYPE_RESTAURANT">Restaurant</string>
 </resources>
