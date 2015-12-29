@@ -9,15 +9,19 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.Category;
+import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.ItemClickListener;
 import de.grundid.drinker.R;
 import de.grundid.drinker.storage.DaoManager;
+import de.grundid.drinker.utils.AnalyticsUtils;
 import de.grundid.drinker.utils.DatedResponse;
 import de.grundid.drinker.utils.IonLoaderHelper;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 
 public class DrinksMenuActivity extends AppCompatActivity implements ItemClickListener<MenuDrink> {
 
@@ -64,33 +68,38 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 
 	private void loadData(boolean forceReload) {
 		swipeRefreshLayout.setRefreshing(true);
-		new MenuLoader(this).getForDatedResponse("/drinksmenu/menu/" + placeId,
+		new MenuLoader(this).getForDatedResponse("/menu/" + placeId,
 				forceReload, new IonLoaderHelper.OnDatedResponse<Menu>() {
 
 					@Override public void onDatedResponse(DatedResponse<Menu> response, Exception e) {
 						swipeRefreshLayout.setRefreshing(false);
 						if (e == null) {
-							menu = response.getContent();
-							setTitle(menu.getName());
-							DrinkMenuComparator comparator = new DrinkMenuComparator();
-							List<MenuDrink> sortedDrinks = new ArrayList<>(menu.getDrinks());
-							Collections.sort(sortedDrinks, comparator);
-							List<Object> drinks = new ArrayList<>();
-							String lastCategory = "";
-							for (MenuDrink menuDrink : sortedDrinks) {
-								if (!lastCategory.equals(menuDrink.getCategory())) {
-									drinks.add(Category.valueOf(menuDrink.getCategory()));
-								}
-								drinks.add(menuDrink);
-								lastCategory = menuDrink.getCategory();
-							}
-							if (!drinks.isEmpty()) {
-								drinks.add(new Footer(response.getDate(), menu.getLastUpdated()));
-							}
-							recyclerView.setAdapter(new DrinkAdapter(drinks, DrinksMenuActivity.this));
+							processMenu(response.getContent(), response.getDate());
 						}
 					}
 				});
+	}
+
+	private void processMenu(Menu menu, Date responseDate) {
+		this.menu = menu;
+		setTitle(menu.getName());
+		AnalyticsUtils.with(this).sendScreen("/menu/" + menu.getName());
+		DrinkMenuComparator comparator = new DrinkMenuComparator();
+		List<MenuDrink> sortedDrinks = new ArrayList<>(menu.getDrinks());
+		Collections.sort(sortedDrinks, comparator);
+		List<Object> drinks = new ArrayList<>();
+		String lastCategory = "";
+		for (MenuDrink menuDrink : sortedDrinks) {
+			if (!lastCategory.equals(menuDrink.getCategory())) {
+				drinks.add(Category.valueOf(menuDrink.getCategory()));
+			}
+			drinks.add(menuDrink);
+			lastCategory = menuDrink.getCategory();
+		}
+		if (!drinks.isEmpty()) {
+			drinks.add(new Footer(responseDate, menu.getLastUpdated()));
+		}
+		recyclerView.setAdapter(new DrinkAdapter(drinks, DrinksMenuActivity.this));
 	}
 
 	@Override public void onItemClick(MenuDrink item) {

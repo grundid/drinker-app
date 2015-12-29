@@ -1,10 +1,9 @@
 package de.grundid.drinker;
 
 import android.content.Intent;
-import android.support.design.widget.CollapsingToolbarLayout;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -24,6 +23,7 @@ import de.grundid.drinker.menu.DrinksMenuActivity;
 import de.grundid.drinker.menu.Menu;
 import de.grundid.drinker.storage.DaoManager;
 import de.grundid.drinker.storage.Location;
+import de.grundid.drinker.utils.AnalyticsUtils;
 
 import java.util.*;
 
@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 		checkPlayServices();
 		List<?> locations = DaoManager.with(this).selectAllLocations();
 		recyclerView.setAdapter(new LocationAdapter((List<Object>)locations, this));
+		AnalyticsUtils.with(this).sendScreen("/start");
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 				Place place = PlacePicker.getPlace(data, this);
 				if (!Collections.disjoint(SUPPORTED_TYPES, place.getPlaceTypes())) {
 					savePlace(place);
-					Ion.with(this).load("http://api.grundid.de/drinksmenu/menu/" + place.getId())
+					Ion.with(this).load(Config.BASE_URL + "/menu/" + place.getId())
 							.as(new TypeToken<Menu>() {
 							})
 							.withResponse()

@@ -5,5 +5,5 @@
     <integer name="ga_dispatchPeriod">10</integer>
 
     <!-- Enable dry run mode. Default is false -->
-    <bool name="ga_dryRun">false</bool>
+    <bool name="ga_dryRun">true</bool>
 </resources>

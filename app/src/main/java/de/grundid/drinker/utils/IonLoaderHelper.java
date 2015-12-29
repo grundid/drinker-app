@@ -7,6 +7,7 @@ import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 import com.koushikdutta.ion.builder.Builders;
+import de.grundid.drinker.Config;
 
 import java.io.InputStream;
 import java.text.ParseException;
@@ -20,7 +21,6 @@ public abstract class IonLoaderHelper<T> {
 	public static final String PATTERN_RFC1036 = "EEEE, dd-MMM-yy HH:mm:ss zzz";
 	public static final String PATTERN_RFC1123 = "EEE, dd MMM yyyy HH:mm:ss zzz";
 	public static final String[] DATE_PATTERNS = { PATTERN_RFC1123, PATTERN_RFC1036, PATTERN_ASCTIME };
-	private static final String BASE_URL = "http://api.grundid.de";
 	private Context context;
 
 	public IonLoaderHelper(Context context) {
@@ -42,8 +42,8 @@ public abstract class IonLoaderHelper<T> {
 	}
 
 	public void getForDatedResponse(String url, boolean forceReload, final OnDatedResponse<T> onDatedResponse) {
-		Builders.Any.B load = Ion.with(context).load(BASE_URL + url);
-		Log.i("DRINKER", "Request URL: " + BASE_URL + url);
+		Builders.Any.B load = Ion.with(context).load(Config.BASE_URL + url);
+		Log.i("DRINKER", "Request URL: " + Config.BASE_URL + url);
 		if (forceReload) {
 			load.addHeader("cache-control", "max-age=0");
 		}

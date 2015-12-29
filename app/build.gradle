@@ -55,7 +55,6 @@ dependencies {
     compile "com.google.android.gms:play-services-maps:${googlePlayServices}"
     compile "com.google.android.gms:play-services-location:${googlePlayServices}"
     compile "com.google.android.gms:play-services-analytics:${googlePlayServices}"
-    compile "com.google.android.gms:play-services-gcm:${googlePlayServices}"
 
     compile 'de.grundid.android:android-tools:1.5'
     compile 'com.koushikdutta.ion:ion:2.1.6'

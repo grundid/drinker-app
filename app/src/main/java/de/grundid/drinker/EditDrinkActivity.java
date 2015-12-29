@@ -2,11 +2,14 @@ package de.grundid.drinker;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
-import android.view.*;
+import android.view.LayoutInflater;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.*;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
@@ -14,19 +17,20 @@ import com.koushikdutta.ion.Response;
 import de.grundid.android.utils.AndroidHelper;
 import de.grundid.drinker.menu.DrinkModel;
 import de.grundid.drinker.menu.MenuDrink;
+import de.grundid.drinker.utils.AnalyticsUtils;
 import de.grundid.drinker.utils.DrinkModelHelper;
 import de.grundid.drinker.utils.PreferencesUtils;
 
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.NumberFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EditDrinkActivity extends AppCompatActivity {
 
 	public static final String EXTRA_LOCATION_ID = "EXTRA_LOCATION_ID";
 	public static final String EXTRA_DRINK = "EXTRA_DRINK";
-	public static final String EXTRA_SINGLE_DRINK = "EXTRA_SINGLE_DRINK";
 	private AutoCompleteTextView drinkName;
 	private AutoCompleteTextView drinkBrand;
 	private EditText drinkPrice;
@@ -42,10 +46,9 @@ public class EditDrinkActivity extends AppCompatActivity {
 
 		@Override
 		protected char[] getAcceptedChars() {
-			char[] acceptedCharacters = new char[] {
+			return new char[] {
 					'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', ',',
 					new DecimalFormatSymbols().getDecimalSeparator() };
-			return acceptedCharacters;
 		}
 
 		public int getInputType() {
@@ -78,6 +81,11 @@ public class EditDrinkActivity extends AppCompatActivity {
 		});
 		initSuggestions();
 		initFieldsFromMenuDrink();
+	}
+
+	@Override protected void onStart() {
+		super.onStart();
+		AnalyticsUtils.with(this).sendScreen("/editDrink");
 	}
 
 	private void initFieldsFromMenuDrink() {
@@ -208,6 +216,7 @@ public class EditDrinkActivity extends AppCompatActivity {
 				finish();
 			}
 		}
+		AnalyticsUtils.with(this).sendEvent("drink", "saveDrink", null);
 	}
 
 	private void resetForm() {
