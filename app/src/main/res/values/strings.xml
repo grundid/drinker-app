@@ -1,7 +1,9 @@
 <resources>
     <string name="app_name">Drinker</string>
     <string name="action_save">Speichern</string>
-    <string name="empty_state_locations">Du hast bisher keine Locations mit der App besucht. Wähle einfach eine Location
+    <string name="empty_state_locations">Die Drinker App ist neu! Die App lebt von Deiner Mitarbeit.
+        Besuche Locations und erfasse Getränke aus der Getränkekarte. Bis jetzt hast keine
+        Locations mit der App besucht. Wähle einfach eine Location
         in der Nähe mit dem Lupe-Button aus.
     </string>
     <string name="empty_state_drinksmenu">Für diese Location gibt es noch keine erfassten Getränke. Klicke auf das + und
