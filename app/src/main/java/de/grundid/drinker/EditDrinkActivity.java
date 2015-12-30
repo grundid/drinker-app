@@ -188,10 +188,7 @@ public class EditDrinkActivity extends AppCompatActivity {
 
 	private void handleSuccessfulSave() {
 		if (saveMultiple) {
-			Toast.makeText(this,
-					"Gespeichert", Toast.LENGTH_SHORT)
-					.show();
-			resetForm();
+			showSavedAndResetFrom();
 		}
 		else {
 			if (menuDrink == null) {
@@ -203,7 +200,7 @@ public class EditDrinkActivity extends AppCompatActivity {
 									@Override public void onClick(DialogInterface dialog, int which) {
 										saveMultiple = true;
 										findViewById(R.id.finishButton).setVisibility(View.VISIBLE);
-										resetForm();
+										showSavedAndResetFrom();
 									}
 								}).setNegativeButton("Nein", new DialogInterface.OnClickListener() {
 
@@ -219,11 +216,20 @@ public class EditDrinkActivity extends AppCompatActivity {
 		AnalyticsUtils.with(this).sendEvent("drink", "saveDrink", null);
 	}
 
+	private void showSavedAndResetFrom() {
+		Toast.makeText(this,
+				"Gespeichert", Toast.LENGTH_SHORT)
+				.show();
+		resetForm();
+	}
+
 	private void resetForm() {
 		drinkName.setText("");
 		drinkBrand.setText("");
 		drinkPrice.setText(null);
 		drinkVolume.setText(null);
+		drinkDescription.setText(null);
+		drinkName.requestFocus();
 	}
 
 	private Category parseDrinkCategory() {
