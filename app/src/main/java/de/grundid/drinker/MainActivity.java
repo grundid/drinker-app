@@ -10,6 +10,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 import com.google.android.gms.common.ConnectionResult;
@@ -43,7 +45,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		setTitle("Drinker - die offene Getränkekarte");
+		setTitle("Drinker - offene Getränkekarte");
 		final Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
@@ -122,7 +124,6 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 
 			@Override public void onClick(View v) {
 				PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
-
 				try {
 					startActivityForResult(builder.build(MainActivity.this), PLACE_PICKER_REQUEST);
 				}
@@ -154,5 +155,22 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 		Intent intent = new Intent(this, DrinksMenuActivity.class);
 		intent.putExtra("PLACE_ID", placeId);
 		startActivity(intent);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_info: {
+				startActivity(new Intent(this, InfoActivity.class));
+				return true;
+			}
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override public boolean onCreateOptionsMenu(android.view.Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.main_menu, menu);
+		return super.onCreateOptionsMenu(menu);
 	}
 }

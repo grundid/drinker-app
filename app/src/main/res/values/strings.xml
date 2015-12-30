@@ -16,4 +16,6 @@
     <string name="TYPE_MOVIE_THEATER">Kino</string>
     <string name="TYPE_NIGHT_CLUB">Nachtklub</string>
     <string name="TYPE_RESTAURANT">Restaurant</string>
+    <string name="action_info">Info</string>
+    <string name="title_activity_info">InfoActivity</string>
 </resources>
