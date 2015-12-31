@@ -36,8 +36,7 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		setContentView(R.layout.activity_drinks_menu);
 		Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
-		Intent intent = getIntent();
-		placeId = intent.getStringExtra("PLACE_ID");
+		placeId = getPlaceIdFromIntent();
 		FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
 
@@ -59,6 +58,18 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
 		recyclerView.setLayoutManager(new LinearLayoutManager(this));
 		DaoManager.with(this).incLocationVisitCount(placeId);
+	}
+
+	private String getPlaceIdFromIntent() {
+		Intent intent = getIntent();
+		String action = intent.getAction();
+		String data = intent.getDataString();
+		if (Intent.ACTION_VIEW.equals(action) && data != null) {
+			return data.substring(data.lastIndexOf("/") + 1);
+		}
+		else {
+			return intent.getStringExtra("PLACE_ID");
+		}
 	}
 
 	@Override protected void onStart() {
