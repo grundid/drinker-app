@@ -67,6 +67,10 @@ public class DaoManager {
 		helper.writeSqlTemplate(new InsertLocation(location));
 	}
 
+	public void deleteLocation(String placeId){
+		helper.writeSqlTemplate(new DeleteLocation(placeId));
+	}
+
 	public void savePlace(PlaceWrapper place) {
 		Location location = selectLocation(place.getId());
 		if (location == null) {

@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 		super.onStart();
 		checkPlayServices();
 		List<?> locations = DaoManager.with(this).selectAllLocations();
-		recyclerView.setAdapter(new LocationAdapter((List<Object>)locations, this));
+		recyclerView.setAdapter(new LocationAdapter((List<Object>)locations, this, this));
 		AnalyticsUtils.with(this).sendScreen("/start");
 	}
 
