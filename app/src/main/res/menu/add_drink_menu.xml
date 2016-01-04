@@ -4,5 +4,15 @@
           android:icon="@drawable/ic_done_24dp"
           app:showAsAction="always"
           android:title="@string/action_save"/>
+
+    <item android:id="@+id/action_resetname"
+        app:showAsAction="never"
+        android:title="@string/action_reset_name"
+        android:checkable="true" />
+
+    <item android:id="@+id/action_resetbrand"
+        app:showAsAction="never"
+        android:title="@string/action_reset_brand"
+        android:checkable="true" />
 </menu>
 

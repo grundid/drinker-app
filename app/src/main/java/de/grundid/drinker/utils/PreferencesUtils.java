@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public class PreferencesUtils {
 
+	public static final String KEY_RESET_NAME = "reset-name";
+	public static final String KEY_RESET_BRAND = "reset-brand";
 	private static final String KEY_INTERNAL_UUID = "internal_uuid";
 
 	public static String getUuid(Context context) {
@@ -24,11 +26,6 @@ public class PreferencesUtils {
 		return sharedPreferences.getString(preference, defaultValue);
 	}
 
-	public static boolean getBoolPreference(Context context, String preference, boolean defaultValue) {
-		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
-		return sharedPreferences.getBoolean(preference, defaultValue);
-	}
-
 	public static void setPreference(Context context, String preference, String value) {
 		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
 		SharedPreferences.Editor editor = sharedPreferences.edit();
@@ -36,6 +33,17 @@ public class PreferencesUtils {
 		editor.commit();
 	}
 
+	public static boolean getBoolPreference(Context context, String preference, boolean defaultValue) {
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		return sharedPreferences.getBoolean(preference, defaultValue);
+	}
+
+	public static void setBoolPreference(Context context, String preference, boolean value) {
+		SharedPreferences sharedPreferences = PreferenceManager.getDefaultSharedPreferences(context);
+		SharedPreferences.Editor editor = sharedPreferences.edit();
+		editor.putBoolean(preference, value);
+		editor.commit();
+	}
 
 
 }
