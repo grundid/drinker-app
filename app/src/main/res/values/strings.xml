@@ -18,4 +18,5 @@
     <string name="TYPE_RESTAURANT">Restaurant</string>
     <string name="action_info">Info</string>
     <string name="title_activity_info">InfoActivity</string>
+    <string name="action_sort">Sortierung ändern</string>
 </resources>

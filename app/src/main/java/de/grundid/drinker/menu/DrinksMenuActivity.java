@@ -1,5 +1,8 @@
 package de.grundid.drinker.menu;
 
+import android.app.AlertDialog;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -8,25 +11,32 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import de.grundid.drinker.Category;
 import de.grundid.drinker.EditDrinkActivity;
+import de.grundid.drinker.InfoActivity;
 import de.grundid.drinker.ItemClickListener;
 import de.grundid.drinker.R;
 import de.grundid.drinker.storage.DaoManager;
 import de.grundid.drinker.utils.AnalyticsUtils;
 import de.grundid.drinker.utils.DatedResponse;
 import de.grundid.drinker.utils.IonLoaderHelper;
+import de.grundid.drinker.utils.LabelWithId;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DrinksMenuActivity extends AppCompatActivity implements ItemClickListener<MenuDrink> {
 
 	private RecyclerView recyclerView;
 	private Menu menu;
+	private Date responseDate;
 	private String placeId;
 	private SwipeRefreshLayout swipeRefreshLayout;
 
@@ -82,7 +92,8 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		new MenuLoader(this).getForDatedResponse("/menu/" + placeId,
 				forceReload, new IonLoaderHelper.OnDatedResponse<Menu>() {
 
-					@Override public void onDatedResponse(DatedResponse<Menu> response, Exception e) {
+					@Override
+					public void onDatedResponse(DatedResponse<Menu> response, Exception e) {
 						swipeRefreshLayout.setRefreshing(false);
 						if (e == null) {
 							processMenu(response.getContent(), response.getDate());
@@ -93,9 +104,14 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 
 	private void processMenu(Menu menu, Date responseDate) {
 		this.menu = menu;
+		this.responseDate = responseDate;
 		setTitle(menu.getName());
 		AnalyticsUtils.with(this).sendScreen("/menu/" + menu.getName());
-		DrinkMenuComparator comparator = new DrinkMenuComparator();
+		sortMenu(false);
+	}
+
+	private void sortMenu(boolean byName) {
+		DrinkMenuComparator comparator = new DrinkMenuComparator(byName);
 		List<MenuDrink> sortedDrinks = new ArrayList<>(menu.getDrinks());
 		Collections.sort(sortedDrinks, comparator);
 		List<Object> drinks = new ArrayList<>();
@@ -118,5 +134,36 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, menu.getLocationId());
 		addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_DRINK, item);
 		startActivityForResult(addDrinkIntent, 1000);
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+			case R.id.action_sort: {
+				createDialog().show();
+				return true;
+			}
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+	@Override public boolean onCreateOptionsMenu(android.view.Menu menu) {
+		MenuInflater inflater = getMenuInflater();
+		inflater.inflate(R.menu.drinkmenu_menu, menu);
+		return super.onCreateOptionsMenu(menu);
+	}
+
+	public Dialog createDialog() {
+		final Set<Integer> selectedIds = new HashSet<>();
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		// Set the dialog title
+		builder.setTitle("Getränkesortierung")
+				.setItems(new String[]{"Nach Preis", "Nach Name"}, new DialogInterface.OnClickListener() {
+					@Override
+					public void onClick(DialogInterface dialog, int which) {
+						sortMenu(which == 1);
+					}
+				});
+		return builder.create();
 	}
 }
