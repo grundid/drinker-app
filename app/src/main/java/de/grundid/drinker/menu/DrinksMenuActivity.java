@@ -20,6 +20,7 @@ import de.grundid.drinker.InfoActivity;
 import de.grundid.drinker.ItemClickListener;
 import de.grundid.drinker.R;
 import de.grundid.drinker.storage.DaoManager;
+import de.grundid.drinker.storage.Location;
 import de.grundid.drinker.utils.AnalyticsUtils;
 import de.grundid.drinker.utils.DatedResponse;
 import de.grundid.drinker.utils.IonLoaderHelper;
@@ -40,6 +41,7 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 	private String placeId;
 	private SwipeRefreshLayout swipeRefreshLayout;
 	private DrinkAdapter drinkAdapter;
+	private long lastVisit;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -48,6 +50,8 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
 		setSupportActionBar(toolbar);
 		placeId = getPlaceIdFromIntent();
+		Location location = DaoManager.with(this).selectLocation(placeId);
+		lastVisit = location.getLastVisit();
 		FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
 		fab.setOnClickListener(new View.OnClickListener() {
 
@@ -128,7 +132,7 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 			drinks.add(new Footer(responseDate, menu.getLastUpdated()));
 		}
 		if(drinkAdapter == null) {
-			drinkAdapter = new DrinkAdapter(drinks, DrinksMenuActivity.this);
+			drinkAdapter = new DrinkAdapter(drinks, DrinksMenuActivity.this, lastVisit);
 			recyclerView.setAdapter(drinkAdapter);
 		}
 		else {

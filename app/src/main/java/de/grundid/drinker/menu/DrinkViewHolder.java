@@ -3,6 +3,7 @@ package de.grundid.drinker.menu;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import de.grundid.drinker.R;
 import de.grundid.drinker.Utils;
@@ -21,6 +22,7 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 	private TextView price;
 	private TextView volume;
 	private TextView pricePerVolume;
+	private ImageView newIcon;
 	private ImageButton moreButton;
 
 	public DrinkViewHolder(View itemView) {
@@ -32,9 +34,14 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 		description = (TextView)itemView.findViewById(R.id.drinkDescription);
 		pricePerVolume = (TextView)itemView.findViewById(R.id.drinkPricePerVolume);
 		moreButton = (ImageButton)itemView.findViewById(R.id.moreActions);
+		newIcon = (ImageView)itemView.findViewById(R.id.new_icon);
 	}
 
-	public void update(MenuDrink drink) {
+	public void update(MenuDrink drink, long lastVisit) {
+		if(lastVisit > drink.getModifiedDate())
+			newIcon.setVisibility(View.GONE);
+		else
+			newIcon.setVisibility(View.VISIBLE);
 		brand.setVisibility(Utils.hasText(drink.getBrand()) ? View.VISIBLE : View.GONE);
 		brand.setText(drink.getBrand());
 		name.setText(drink.getName());

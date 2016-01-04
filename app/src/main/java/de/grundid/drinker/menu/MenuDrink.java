@@ -15,6 +15,7 @@ public class MenuDrink implements Parcelable {
 	private String description;
 	private String category;
 	private transient Double pricePerVolume;
+	private long modifiedDate;
 
 	public MenuDrink() {
 	}
@@ -127,5 +128,13 @@ public class MenuDrink implements Parcelable {
 		dest.writeString(description);
 		dest.writeString(category);
 		dest.writeInt(volume == null ? -1 : volume.intValue());
+	}
+
+	public long getModifiedDate() {
+		return modifiedDate;
+	}
+
+	public void setModifiedDate(long modifiedDate) {
+		this.modifiedDate = modifiedDate;
 	}
 }
