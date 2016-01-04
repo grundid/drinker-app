@@ -27,9 +27,11 @@ import de.grundid.drinker.menu.Menu;
 import de.grundid.drinker.menu.MenuDrink;
 import de.grundid.drinker.storage.DaoManager;
 import de.grundid.drinker.utils.AnalyticsUtils;
+import de.grundid.drinker.utils.CategoryHelper;
 import de.grundid.drinker.utils.DatedResponse;
 import de.grundid.drinker.utils.DrinkModelHelper;
 import de.grundid.drinker.utils.PreferencesUtils;
+import de.grundid.drinker.utils.Suggest;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -37,6 +39,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class EditDrinkActivity extends AppCompatActivity {
 
@@ -55,6 +58,8 @@ public class EditDrinkActivity extends AppCompatActivity {
     private boolean resetBrand = false;
     private MenuDrink menuDrink;
     private LinearLayout previousDrink;
+    private Suggest suggest;
+    CategoryHelper categories;
 
     public class NumericDigitsKeyListener extends DigitsKeyListener {
 
@@ -77,7 +82,6 @@ public class EditDrinkActivity extends AppCompatActivity {
         setTitle("Getränk erfassen");
         locationId = getIntent().getStringExtra(EXTRA_LOCATION_ID);
         categorySpinner = (Spinner) findViewById(R.id.category_spinner);
-        categorySpinner.setAdapter(createCategoryAdapter());
         drinkName = (AutoCompleteTextView) findViewById(R.id.drinkName);
         drinkBrand = (AutoCompleteTextView) findViewById(R.id.drinkBrand);
         drinkPrice = (EditText) findViewById(R.id.drinkPrice);
@@ -102,14 +106,15 @@ public class EditDrinkActivity extends AppCompatActivity {
                 builder.setTitle("Getränk löschen").setMessage("Möchtest du diesen Drink löschen?")
                         .setPositiveButton(
                                 "Ja", new DialogInterface.OnClickListener() {
-                                    @Override public void onClick(DialogInterface dialog, int which) {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
                                         deleteDrink();
                                     }
                                 }).setNegativeButton("Nein", null).create().show();
             }
         });
         initSuggestions();
-        initMenuDrinkFromIntent();
+        initCategoryAdapter();
         resetName = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_NAME, false);
         resetBrand = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_BRAND, false);
         previousDrink = (LinearLayout) findViewById(R.id.previous_drink);
@@ -138,24 +143,35 @@ public class EditDrinkActivity extends AppCompatActivity {
             drinkPrice.setText(priceFormat.format((double) menuDrink.getPrice() / 100));
             if (menuDrink.getVolume() != null)
                 drinkVolume.setText("" + menuDrink.getVolume());
-            int counter = 0;
-            for (Category cat : Category.values()) {
-                if (cat.name().equals(menuDrink.getCategory())) {
-                    categorySpinner.setSelection(counter);
-                }
-                counter++;
-            }
-            categorySpinner.requestFocus();
+            categorySpinner.setSelection(categories.indexOfCategory(menuDrink.getCategory()));
         }
     }
 
-    private StringListAdapter createCategoryAdapter() {
-        List<String> categories = new ArrayList<>();
-        for (Category cat : Category.values()) {
-            categories.add(cat.getLabel());
-        }
-        return new StringListAdapter(categories, LayoutInflater.from(this), android.R.layout.simple_spinner_item,
-                android.R.layout.simple_spinner_dropdown_item);
+    private void initCategoryAdapter() {
+        Builders.Any.B load = Ion.with(this).load(Config.BASE_URL + "/suggest");
+        load.asInputStream().withResponse()
+                .setCallback(new FutureCallback<Response<InputStream>>() {
+
+                    @Override
+                    public void onCompleted(Exception e, Response<InputStream> response) {
+                        if (e == null) {
+                            try {
+                                suggest = new ObjectMapper().readValue(response.getResult(), Suggest.class);
+                                categories = new CategoryHelper(suggest.getCategories());
+                                //TODO
+                                categorySpinner.setAdapter(new StringListAdapter(categories.getCategories(), LayoutInflater.from(EditDrinkActivity.this), android.R.layout.simple_spinner_item,
+                                        android.R.layout.simple_spinner_dropdown_item));
+                                initMenuDrinkFromIntent();
+                            } catch (IOException e1) {
+                                e1.printStackTrace();
+                                Toast.makeText(EditDrinkActivity.this,
+                                        "Fehler bei initialisieren der Kategorien", Toast.LENGTH_SHORT).show();
+                            }
+                        } else {
+                            Toast.makeText(EditDrinkActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+                        }
+                    }
+                });
     }
 
     private void initSuggestions() {
@@ -286,12 +302,7 @@ public class EditDrinkActivity extends AppCompatActivity {
 
     private String parseDrinkCategory() {
         Object categoryName = categorySpinner.getSelectedItem();
-        for (Category category : Category.values()) {
-            if (categoryName.equals(category.getLabel())) {
-                return category.name();
-            }
-        }
-        return null;
+        return categories.getCategoryKey(categoryName.toString());
     }
 
     @Override
