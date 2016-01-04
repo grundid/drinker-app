@@ -16,21 +16,17 @@ import android.view.MenuItem;
 import android.view.View;
 import de.grundid.drinker.Category;
 import de.grundid.drinker.EditDrinkActivity;
-import de.grundid.drinker.InfoActivity;
 import de.grundid.drinker.ItemClickListener;
 import de.grundid.drinker.R;
 import de.grundid.drinker.storage.DaoManager;
 import de.grundid.drinker.utils.AnalyticsUtils;
 import de.grundid.drinker.utils.DatedResponse;
 import de.grundid.drinker.utils.IonLoaderHelper;
-import de.grundid.drinker.utils.LabelWithId;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class DrinksMenuActivity extends AppCompatActivity implements ItemClickListener<MenuDrink> {
 
@@ -161,11 +157,11 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 	}
 
 	public Dialog createDialog() {
-		final Set<Integer> selectedIds = new HashSet<>();
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		// Set the dialog title
 		builder.setTitle("Getränkesortierung")
-				.setItems(new String[]{"Nach Preis", "Nach Name"}, new DialogInterface.OnClickListener() {
+				.setItems(new String[] { "Nach Preis", "Nach Name" }, new DialogInterface.OnClickListener() {
+
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
 						sortMenu(which == 1);
