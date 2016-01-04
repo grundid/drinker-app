@@ -39,6 +39,7 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 	private Date responseDate;
 	private String placeId;
 	private SwipeRefreshLayout swipeRefreshLayout;
+	private DrinkAdapter drinkAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -126,7 +127,13 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		if (!drinks.isEmpty()) {
 			drinks.add(new Footer(responseDate, menu.getLastUpdated()));
 		}
-		recyclerView.setAdapter(new DrinkAdapter(drinks, DrinksMenuActivity.this));
+		if(drinkAdapter == null) {
+			drinkAdapter = new DrinkAdapter(drinks, DrinksMenuActivity.this);
+			recyclerView.setAdapter(drinkAdapter);
+		}
+		else {
+			drinkAdapter.setDrinks(drinks);
+		}
 	}
 
 	@Override public void onItemClick(MenuDrink item) {

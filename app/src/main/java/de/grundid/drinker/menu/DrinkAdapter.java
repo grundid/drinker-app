@@ -90,4 +90,9 @@ public class DrinkAdapter extends EmptyStateAdapter {
 			return super.getItemViewType(position);
 		}
 	}
+
+	public void setDrinks(List<Object> drinks) {
+		this.elements = drinks;
+		notifyDataSetChanged();
+	}
 }
