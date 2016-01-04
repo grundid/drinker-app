@@ -21,10 +21,12 @@ public class DrinkAdapter extends EmptyStateAdapter {
 	private static final int TYPE_DRINK = 2;
 	private static final int TYPE_FOOTER = 3;
 	private final ItemClickListener<MenuDrink> itemClickListener;
+	private final long lastVisit;
 
-	public DrinkAdapter(List<Object> drinks, ItemClickListener<MenuDrink> itemClickListener) {
+	public DrinkAdapter(List<Object> drinks, ItemClickListener<MenuDrink> itemClickListener, long lastVisit) {
 		super(drinks, R.string.empty_state_drinksmenu);
 		this.itemClickListener = itemClickListener;
+		this.lastVisit = lastVisit;
 	}
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -47,7 +49,7 @@ public class DrinkAdapter extends EmptyStateAdapter {
 		if (holder instanceof DrinkViewHolder) {
 			DrinkViewHolder drinkViewHolder = (DrinkViewHolder)holder;
 			final MenuDrink menuDrink = (MenuDrink)elements.get(position);
-			drinkViewHolder.update(menuDrink);
+			drinkViewHolder.update(menuDrink, lastVisit);
 			drinkViewHolder.getMoreButton().setOnClickListener(new View.OnClickListener() {
 
 				@Override public void onClick(View v) {

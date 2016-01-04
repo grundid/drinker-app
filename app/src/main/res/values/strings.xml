@@ -19,4 +19,6 @@
     <string name="action_info">Info</string>
     <string name="title_activity_info">InfoActivity</string>
     <string name="action_sort">Sortierung ändern</string>
+    <string name="action_reset_name">Name zurücksetzen</string>
+    <string name="action_reset_brand">Marke zurücksetzen</string>
 </resources>

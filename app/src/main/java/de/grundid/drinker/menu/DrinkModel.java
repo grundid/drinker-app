@@ -1,16 +1,22 @@
 package de.grundid.drinker.menu;
 
 import de.grundid.drinker.Category;
+import de.grundid.drinker.utils.Utils;
 
-public class DrinkModel {
+public class DrinkModel implements SimpleDrink {
 
 	private String name;
 	private String brand;
-	private Integer price;
+	private int price;
 	private Integer volume;
-	private Category category;
+	private String category;
 	private String description;
 	private String locationId;
+
+	@Override
+	public Double getPricePerVolume() {
+		return Utils.getPricePerVolume(price, volume);
+	}
 
 	public String getName() {
 		return name;
@@ -28,11 +34,11 @@ public class DrinkModel {
 		this.brand = brand;
 	}
 
-	public Integer getPrice() {
+	public int getPrice() {
 		return price;
 	}
 
-	public void setPrice(Integer price) {
+	public void setPrice(int price) {
 		this.price = price;
 	}
 
@@ -44,11 +50,16 @@ public class DrinkModel {
 		this.volume = volume;
 	}
 
-	public Category getCategory() {
+	public String getCategory() {
 		return category;
 	}
 
-	public void setCategory(Category category) {
+	@Override
+	public long getModifiedDate() {
+		return 0;
+	}
+
+	public void setCategory(String category) {
 		this.category = category;
 	}
 

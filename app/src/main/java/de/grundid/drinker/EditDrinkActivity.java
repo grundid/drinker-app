@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.InputType;
 import android.text.method.DigitsKeyListener;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 import de.grundid.android.utils.AndroidHelper;
 import de.grundid.drinker.menu.DrinkModel;
+import de.grundid.drinker.menu.DrinkViewHolder;
 import de.grundid.drinker.menu.MenuDrink;
 import de.grundid.drinker.utils.AnalyticsUtils;
 import de.grundid.drinker.utils.DrinkModelHelper;
@@ -39,7 +41,10 @@ public class EditDrinkActivity extends AppCompatActivity {
 	private String locationId;
 	private boolean saveInProcess = false;
 	private boolean saveMultiple = false;
+	private boolean resetName = false;
+	private boolean resetBrand = false;
 	private MenuDrink menuDrink;
+	private LinearLayout previousDrink;
 
 	public class NumericDigitsKeyListener extends DigitsKeyListener {
 
@@ -74,17 +79,29 @@ public class EditDrinkActivity extends AppCompatActivity {
 		findViewById(R.id.finishButton).setVisibility(View.INVISIBLE);
 		findViewById(R.id.saveButton).setOnClickListener(new View.OnClickListener() {
 
-			@Override public void onClick(View v) {
+			@Override
+			public void onClick(View v) {
 				saveDrink();
 			}
 		});
 		initSuggestions();
 		initFieldsFromMenuDrink();
+		resetName = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_NAME, false);
+		resetBrand = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_BRAND, false);
+		previousDrink = (LinearLayout) findViewById(R.id.previous_drink);
+		previousDrink.setVisibility(View.GONE);
 	}
 
 	@Override protected void onStart() {
 		super.onStart();
 		AnalyticsUtils.with(this).sendScreen("/editDrink");
+	}
+
+	@Override
+	protected void onStop() {
+		super.onStop();
+		PreferencesUtils.setBoolPreference(this, PreferencesUtils.KEY_RESET_NAME, resetName);
+		PreferencesUtils.setBoolPreference(this, PreferencesUtils.KEY_RESET_BRAND, resetBrand);
 	}
 
 	private void initFieldsFromMenuDrink() {
@@ -140,7 +157,7 @@ public class EditDrinkActivity extends AppCompatActivity {
 	private synchronized void saveDrink() {
 		if (!saveInProcess) {
 			saveInProcess = true;
-			DrinkModel drinkModel = new DrinkModel();
+			final DrinkModel drinkModel = new DrinkModel();
 			drinkModel.setLocationId(locationId);
 			drinkModel.setName(drinkName.getText().toString());
 			drinkModel.setBrand(drinkBrand.getText().toString());
@@ -157,12 +174,13 @@ public class EditDrinkActivity extends AppCompatActivity {
 						.withResponse().setCallback(
 						new FutureCallback<Response<String>>() {
 
-							@Override public void onCompleted(Exception e, Response<String> result) {
+							@Override
+							public void onCompleted(Exception e, Response<String> result) {
 								saveInProcess = false;
 								if (e == null && result.getHeaders().code() == 200) {
 									handleSuccessfulSave();
-								}
-								else {
+									updateLastDrink(drinkModel);
+								} else {
 									Toast.makeText(EditDrinkActivity.this,
 											"Fehler beim Speichern: " + result.getHeaders().code(), Toast.LENGTH_SHORT)
 											.show();
@@ -183,6 +201,13 @@ public class EditDrinkActivity extends AppCompatActivity {
 				builder.create().show();
 			}
 		}
+	}
+
+	private void updateLastDrink(DrinkModel drinkModel) {
+		DrinkViewHolder viewHolder = new DrinkViewHolder(previousDrink);
+		viewHolder.update(drinkModel, Long.MAX_VALUE);
+		viewHolder.hideMoreActions();
+		previousDrink.setVisibility(View.VISIBLE);
 	}
 
 	private void handleSuccessfulSave() {
@@ -223,19 +248,23 @@ public class EditDrinkActivity extends AppCompatActivity {
 	}
 
 	private void resetForm() {
-		drinkName.setText("");
-		drinkBrand.setText("");
+		if(resetName) {
+			drinkName.setText("");
+		}
+		if(resetBrand) {
+			drinkBrand.setText("");
+		}
 		drinkPrice.setText(null);
 		drinkVolume.setText(null);
 		drinkDescription.setText(null);
 		drinkName.requestFocus();
 	}
 
-	private Category parseDrinkCategory() {
+	private String parseDrinkCategory() {
 		Object categoryName = categorySpinner.getSelectedItem();
 		for (Category category : Category.values()) {
 			if (categoryName.equals(category.getLabel())) {
-				return category;
+				return category.name();
 			}
 		}
 		return null;
@@ -244,6 +273,28 @@ public class EditDrinkActivity extends AppCompatActivity {
 	@Override public boolean onCreateOptionsMenu(android.view.Menu menu) {
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.add_drink_menu, menu);
+		MenuItem resetNameItem = menu.findItem(R.id.action_resetname);
+		resetNameItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Log.i("Drinker", item.getTitle().toString());
+				resetName = !resetName;
+				item.setChecked(resetName);
+				return true;
+			}
+		});
+		resetNameItem.setChecked(resetName);
+		MenuItem resetBrandItem = menu.findItem(R.id.action_resetbrand);
+		resetBrandItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+			@Override
+			public boolean onMenuItemClick(MenuItem item) {
+				Log.i("Drinker", item.getTitle().toString());
+				resetBrand = !resetBrand;
+				item.setChecked(resetBrand);
+				return true;
+			}
+		});
+		resetBrandItem.setChecked(resetBrand);
 		return super.onCreateOptionsMenu(menu);
 	}
 }

@@ -40,7 +40,7 @@ public class DrinkModelHelper {
 	}
 
 	public static boolean isDrinkModelValid(DrinkModel model) {
-		return Utils.hasText(model.getName()) && model.getCategory() != null && model.getPrice() != null;
+		return Utils.hasText(model.getName()) && model.getCategory() != null && model.getPrice() != 0;
 	}
 
 
