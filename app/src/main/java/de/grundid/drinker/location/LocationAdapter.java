@@ -61,12 +61,7 @@ public class LocationAdapter extends EmptyStateAdapter {
 											elements = (List<Object>)locations;
 											notifyDataSetChanged();
 										}
-									}).setNegativeButton("Nein", new DialogInterface.OnClickListener() {
-
-						@Override public void onClick(DialogInterface dialog, int which) {
-
-						}
-					}).create().show();
+									}).setNegativeButton("Nein", null).create().show();
 					return false;
 				}
 			});
