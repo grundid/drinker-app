@@ -4,8 +4,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import de.grundid.drinker.utils.Utils;
+
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MenuDrink implements Parcelable {
+public class MenuDrink implements Parcelable, SimpleDrink {
 
 	private String drinkId;
 	private String name;
@@ -48,18 +50,15 @@ public class MenuDrink implements Parcelable {
 		}
 	};
 
+	@Override
 	public Double getPricePerVolume() {
 		if (pricePerVolume == null) {
-			if (volume != null) {
-				pricePerVolume = ((double)price / 100) / ((double)volume / 100);
-			}
-			else {
-				pricePerVolume = Double.NaN;
-			}
+			pricePerVolume = Utils.getPricePerVolume(price, volume);
 		}
 		return pricePerVolume;
 	}
 
+	@Override
 	public String getName() {
 		return name;
 	}
@@ -68,6 +67,7 @@ public class MenuDrink implements Parcelable {
 		this.name = name;
 	}
 
+	@Override
 	public String getBrand() {
 		return brand;
 	}
@@ -76,6 +76,7 @@ public class MenuDrink implements Parcelable {
 		this.brand = brand;
 	}
 
+	@Override
 	public int getPrice() {
 		return price;
 	}
@@ -92,6 +93,7 @@ public class MenuDrink implements Parcelable {
 		this.drinkId = drinkId;
 	}
 
+	@Override
 	public Integer getVolume() {
 		return volume;
 	}
@@ -100,6 +102,7 @@ public class MenuDrink implements Parcelable {
 		this.volume = volume;
 	}
 
+	@Override
 	public String getDescription() {
 		return description;
 	}
@@ -112,6 +115,7 @@ public class MenuDrink implements Parcelable {
 		return 0;
 	}
 
+	@Override
 	public String getCategory() {
 		return category;
 	}
@@ -130,6 +134,7 @@ public class MenuDrink implements Parcelable {
 		dest.writeInt(volume == null ? -1 : volume.intValue());
 	}
 
+	@Override
 	public long getModifiedDate() {
 		return modifiedDate;
 	}

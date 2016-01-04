@@ -17,6 +17,7 @@ import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 import de.grundid.android.utils.AndroidHelper;
 import de.grundid.drinker.menu.DrinkModel;
+import de.grundid.drinker.menu.DrinkViewHolder;
 import de.grundid.drinker.menu.MenuDrink;
 import de.grundid.drinker.utils.AnalyticsUtils;
 import de.grundid.drinker.utils.DrinkModelHelper;
@@ -43,6 +44,7 @@ public class EditDrinkActivity extends AppCompatActivity {
 	private boolean resetName = false;
 	private boolean resetBrand = false;
 	private MenuDrink menuDrink;
+	private LinearLayout previousDrink;
 
 	public class NumericDigitsKeyListener extends DigitsKeyListener {
 
@@ -86,6 +88,8 @@ public class EditDrinkActivity extends AppCompatActivity {
 		initFieldsFromMenuDrink();
 		resetName = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_NAME, false);
 		resetBrand = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_BRAND, false);
+		previousDrink = (LinearLayout) findViewById(R.id.previous_drink);
+		previousDrink.setVisibility(View.GONE);
 	}
 
 	@Override protected void onStart() {
@@ -153,7 +157,7 @@ public class EditDrinkActivity extends AppCompatActivity {
 	private synchronized void saveDrink() {
 		if (!saveInProcess) {
 			saveInProcess = true;
-			DrinkModel drinkModel = new DrinkModel();
+			final DrinkModel drinkModel = new DrinkModel();
 			drinkModel.setLocationId(locationId);
 			drinkModel.setName(drinkName.getText().toString());
 			drinkModel.setBrand(drinkBrand.getText().toString());
@@ -175,6 +179,7 @@ public class EditDrinkActivity extends AppCompatActivity {
 								saveInProcess = false;
 								if (e == null && result.getHeaders().code() == 200) {
 									handleSuccessfulSave();
+									updateLastDrink(drinkModel);
 								} else {
 									Toast.makeText(EditDrinkActivity.this,
 											"Fehler beim Speichern: " + result.getHeaders().code(), Toast.LENGTH_SHORT)
@@ -196,6 +201,13 @@ public class EditDrinkActivity extends AppCompatActivity {
 				builder.create().show();
 			}
 		}
+	}
+
+	private void updateLastDrink(DrinkModel drinkModel) {
+		DrinkViewHolder viewHolder = new DrinkViewHolder(previousDrink);
+		viewHolder.update(drinkModel, Long.MAX_VALUE);
+		viewHolder.hideMoreActions();
+		previousDrink.setVisibility(View.VISIBLE);
 	}
 
 	private void handleSuccessfulSave() {
@@ -248,11 +260,11 @@ public class EditDrinkActivity extends AppCompatActivity {
 		drinkName.requestFocus();
 	}
 
-	private Category parseDrinkCategory() {
+	private String parseDrinkCategory() {
 		Object categoryName = categorySpinner.getSelectedItem();
 		for (Category category : Category.values()) {
 			if (categoryName.equals(category.getLabel())) {
-				return category;
+				return category.name();
 			}
 		}
 		return null;

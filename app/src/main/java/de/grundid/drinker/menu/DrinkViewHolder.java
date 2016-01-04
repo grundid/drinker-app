@@ -1,5 +1,6 @@
 package de.grundid.drinker.menu;
 
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -37,7 +38,7 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 		newIcon = (ImageView)itemView.findViewById(R.id.new_icon);
 	}
 
-	public void update(MenuDrink drink, long lastVisit) {
+	public void update(SimpleDrink drink, long lastVisit) {
 		if(lastVisit > drink.getModifiedDate())
 			newIcon.setVisibility(View.GONE);
 		else
@@ -68,5 +69,9 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 
 	public ImageButton getMoreButton() {
 		return moreButton;
+	}
+
+	public void hideMoreActions() {
+		itemView.findViewById(R.id.moreActions).setVisibility(View.GONE);
 	}
 }
