@@ -10,13 +10,13 @@ public class DrinkModelHelper {
 			String content = input.toString().replaceAll(",", ".").trim();
 			double value = Double.parseDouble(content);
 			if (value == 0) {
-				return null;
+				return 0;
 			}
 			return (int)Math.round(value * 100);
 		}
 		catch (Exception e) {
 		}
-		return null;
+		return 0;
 	}
 
 	public static Integer parseDrinkVolume(CharSequence input) {
