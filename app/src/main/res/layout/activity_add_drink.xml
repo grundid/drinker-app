@@ -136,7 +136,16 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Erfassen beenden" />
+                    android:text="Beenden" />
+
+                <Button
+                    android:id="@+id/deleteButton"
+                    style="@style/Base.Widget.AppCompat.Button.Borderless.Colored"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Löschen"
+                    android:visibility="gone" />
 
                 <Button
                     android:id="@+id/saveButton"
