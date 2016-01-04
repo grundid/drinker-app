@@ -152,7 +152,15 @@
         <LinearLayout
             android:id="@+id/previous_drink"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center_horizontal"
+                android:text="Zuletzt gespeichert"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <include layout="@layout/menu_drink" />
         </LinearLayout>
