@@ -1,6 +1,7 @@
 package de.grundid.drinker;
 
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -40,6 +41,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 	private static final int PLACE_PICKER_REQUEST = 1;
 	private static final int NEW_LOCATION_REQUEST = 2;
 	private RecyclerView recyclerView;
+	private ProgressDialog progressDialog;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,19 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 		List<?> locations = DaoManager.with(this).selectAllLocations();
 		recyclerView.setAdapter(new LocationAdapter((List<Object>)locations, this, this));
 		AnalyticsUtils.with(this).sendScreen("/start");
+		if(progressDialog!=null){
+			progressDialog.dismiss();
+			progressDialog=null;
+		}
+	}
+
+	@Override
+	protected void onResume() {
+		super.onResume();
+		if(progressDialog!=null){
+			progressDialog.dismiss();
+			progressDialog=null;
+		}
 	}
 
 	protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -123,6 +138,13 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 		fab.setOnClickListener(new View.OnClickListener() {
 
 			@Override public void onClick(View v) {
+
+				progressDialog = new ProgressDialog(MainActivity.this);
+				progressDialog.setCancelable(false);
+				progressDialog.setIndeterminate(true);
+				progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+				progressDialog.show();
+
 				PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 				try {
 					startActivityForResult(builder.build(MainActivity.this), PLACE_PICKER_REQUEST);
