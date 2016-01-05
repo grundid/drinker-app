@@ -9,30 +9,22 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-
 import de.grundid.drinker.Category;
 import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.ItemClickListener;
 import de.grundid.drinker.R;
-import de.grundid.drinker.StringListAdapter;
 import de.grundid.drinker.storage.DaoManager;
 import de.grundid.drinker.storage.Location;
 import de.grundid.drinker.utils.AnalyticsUtils;
 import de.grundid.drinker.utils.DatedResponse;
 import de.grundid.drinker.utils.IonLoaderHelper;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class DrinksMenuActivity extends AppCompatActivity implements ItemClickListener<MenuDrink> {
 
@@ -63,16 +55,20 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
                 AlertDialog.Builder builder = new AlertDialog.Builder(DrinksMenuActivity.this);
                 // Set the dialog title
                 builder.setTitle("Editiermodus")
-                        .setItems(new String[]{"Einzeln", "Nach Vorlage"}, new DialogInterface.OnClickListener() {
+                        .setItems(new String[] { "Einzeln", "Nach Vorlage" }, new DialogInterface.OnClickListener() {
 
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 if (which == 0) {
-                                    Intent addDrinkIntentSingle = new Intent(DrinksMenuActivity.this, EditDrinkActivity.class);
-                                    addDrinkIntentSingle.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, menu.getLocationId());
+                                    Intent addDrinkIntentSingle = new Intent(DrinksMenuActivity.this,
+                                            EditDrinkActivity.class);
+                                    addDrinkIntentSingle
+                                            .putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, menu.getLocationId());
                                     startActivity(addDrinkIntentSingle);
-                                } else {
-                                    Intent addDrinkIntentTemplate = new Intent(DrinksMenuActivity.this, TemplateDrinkActivity.class);
+                                }
+                                else {
+                                    Intent addDrinkIntentTemplate = new Intent(DrinksMenuActivity.this,
+                                            TemplateDrinkActivity.class);
                                     startActivity(addDrinkIntentTemplate);
                                 }
                             }
@@ -183,7 +179,7 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         // Set the dialog title
         builder.setTitle("Getränkesortierung")
-                .setItems(new String[]{"Nach Preis", "Nach Name"}, new DialogInterface.OnClickListener() {
+                .setItems(new String[] { "Nach Preis", "Nach Name" }, new DialogInterface.OnClickListener() {
 
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
