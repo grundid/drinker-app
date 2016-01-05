@@ -30,6 +30,11 @@ public class SectionViewHolder extends RecyclerView.ViewHolder {
 		catToImageMap.put(Category.tee, R.drawable.tea);
 		catToImageMap.put(Category.water, R.drawable.water);
 		catToImageMap.put(Category.wine, R.drawable.wine);
+		catToImageMap.put(Category.liqueur, R.drawable.spirituosen);
+		catToImageMap.put(Category.cocktails_nonalcoholic, R.drawable.cocktail_without);
+		catToImageMap.put(Category.aperitiv, R.drawable.aperitiv);
+		catToImageMap.put(Category.juice, R.drawable.schorle);
+
 	}
 
 	public SectionViewHolder(View itemView) {

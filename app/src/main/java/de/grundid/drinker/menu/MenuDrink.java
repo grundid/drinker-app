@@ -3,7 +3,6 @@ package de.grundid.drinker.menu;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import de.grundid.drinker.utils.Utils;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
@@ -21,8 +20,6 @@ public class MenuDrink implements Parcelable, SimpleDrink {
 
 	public MenuDrink() {
 	}
-
-
 
 	protected MenuDrink(Parcel in) {
 		drinkId = in.readString();
