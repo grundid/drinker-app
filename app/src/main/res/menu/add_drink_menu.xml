@@ -14,5 +14,20 @@
         app:showAsAction="never"
         android:title="@string/action_reset_brand"
         android:checkable="true" />
+
+    <item android:id="@+id/action_resetvolume"
+        app:showAsAction="never"
+        android:title="@string/action_reset_volume"
+        android:checkable="true" />
+
+    <item android:id="@+id/action_resetprice"
+        app:showAsAction="never"
+        android:title="@string/action_reset_price"
+        android:checkable="true" />
+
+    <item android:id="@+id/action_resetdescription"
+        app:showAsAction="never"
+        android:title="@string/action_reset_description"
+        android:checkable="true" />
 </menu>
 

@@ -56,6 +56,10 @@ public class EditDrinkActivity extends AppCompatActivity {
     private boolean saveMultiple = false;
     private boolean resetName = false;
     private boolean resetBrand = false;
+    //Standardmäßig werden Preis, Volumen und Beschreibung zurückgesetzt
+    private boolean resetPrice = true;
+    private boolean resetVolume = true;
+    private boolean resetDescription = true;
     private MenuDrink menuDrink;
     private LinearLayout previousDrink;
     private Suggest suggest;
@@ -117,6 +121,9 @@ public class EditDrinkActivity extends AppCompatActivity {
         initCategoryAdapter();
         resetName = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_NAME, false);
         resetBrand = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_BRAND, false);
+        resetPrice = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_PRICE, false);
+        resetVolume = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_VOLUME, false);
+        resetDescription = PreferencesUtils.getBoolPreference(this, PreferencesUtils.KEY_RESET_DESCRIPTION, false);
         previousDrink = (LinearLayout) findViewById(R.id.previous_drink);
         previousDrink.setVisibility(View.GONE);
     }
@@ -132,6 +139,9 @@ public class EditDrinkActivity extends AppCompatActivity {
         super.onStop();
         PreferencesUtils.setBoolPreference(this, PreferencesUtils.KEY_RESET_NAME, resetName);
         PreferencesUtils.setBoolPreference(this, PreferencesUtils.KEY_RESET_BRAND, resetBrand);
+        PreferencesUtils.setBoolPreference(this, PreferencesUtils.KEY_RESET_PRICE, resetPrice);
+        PreferencesUtils.setBoolPreference(this, PreferencesUtils.KEY_RESET_VOLUME, resetVolume);
+        PreferencesUtils.setBoolPreference(this, PreferencesUtils.KEY_RESET_DESCRIPTION, resetDescription);
     }
 
     private void initFieldsFromMenuDrink() {
@@ -294,9 +304,16 @@ public class EditDrinkActivity extends AppCompatActivity {
         if (resetBrand) {
             drinkBrand.setText("");
         }
-        drinkPrice.setText(null);
-        drinkVolume.setText(null);
-        drinkDescription.setText(null);
+        if(resetPrice){
+            drinkPrice.setText("");
+        }
+        if(resetVolume) {
+            drinkVolume.setText("");
+        }
+        if(resetDescription) {
+            drinkDescription.setText("");
+        }
+        //TODO: Nachfragen ob requestFocus eigentlich noch funktioniert
         drinkName.requestFocus();
     }
 
@@ -331,6 +348,39 @@ public class EditDrinkActivity extends AppCompatActivity {
             }
         });
         resetBrandItem.setChecked(resetBrand);
+        MenuItem resetPriceItem = menu.findItem(R.id.action_resetprice);
+        resetPriceItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Log.i("Drinker", item.getTitle().toString());
+                resetPrice = !resetPrice;
+                item.setChecked(resetPrice);
+                return true;
+            }
+        });
+        resetPriceItem.setChecked(resetPrice);
+        MenuItem resetVolumeItem = menu.findItem(R.id.action_resetvolume);
+        resetVolumeItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Log.i("Drinker", item.getTitle().toString());
+                resetVolume = !resetVolume;
+                item.setChecked(resetVolume);
+                return true;
+            }
+        });
+        resetVolumeItem.setChecked(resetVolume);
+        MenuItem resetDescriptionItem = menu.findItem(R.id.action_resetdescription);
+        resetDescriptionItem.setOnMenuItemClickListener(new MenuItem.OnMenuItemClickListener() {
+            @Override
+            public boolean onMenuItemClick(MenuItem item) {
+                Log.i("Drinker", item.getTitle().toString());
+                resetDescription = !resetDescription;
+                item.setChecked(resetDescription);
+                return true;
+            }
+        });
+        resetDescriptionItem.setChecked(resetDescription);
         return super.onCreateOptionsMenu(menu);
     }
 

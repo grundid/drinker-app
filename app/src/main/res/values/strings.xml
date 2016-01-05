@@ -21,4 +21,7 @@
     <string name="action_sort">Sortierung ändern</string>
     <string name="action_reset_name">Name zurücksetzen</string>
     <string name="action_reset_brand">Marke zurücksetzen</string>
+    <string name="action_reset_volume">Menge zurücksetzen</string>
+    <string name="action_reset_price">Preis zurücksetzen</string>
+    <string name="action_reset_description">Beschreibung zurücksetzen</string>
 </resources>
