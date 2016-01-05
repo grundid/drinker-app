@@ -10,6 +10,9 @@ public class PreferencesUtils {
 
 	public static final String KEY_RESET_NAME = "reset-name";
 	public static final String KEY_RESET_BRAND = "reset-brand";
+	public static final String KEY_RESET_PRICE = "reset-price";
+	public static final String KEY_RESET_VOLUME = "reset-volume";
+	public static final String KEY_RESET_DESCRIPTION = "reset-description";
 	private static final String KEY_INTERNAL_UUID = "internal_uuid";
 
 	public static String getUuid(Context context) {
