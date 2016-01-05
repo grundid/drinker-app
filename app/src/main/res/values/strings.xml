@@ -24,4 +24,5 @@
     <string name="action_reset_volume">Menge zurücksetzen</string>
     <string name="action_reset_price">Preis zurücksetzen</string>
     <string name="action_reset_description">Beschreibung zurücksetzen</string>
+    <string name="title_activity_template_drink">TemplateDrinkActivity</string>
 </resources>

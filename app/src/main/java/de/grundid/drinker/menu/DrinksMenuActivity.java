@@ -15,6 +15,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+
 import de.grundid.drinker.Category;
 import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.ItemClickListener;
@@ -35,139 +36,160 @@ import java.util.Set;
 
 public class DrinksMenuActivity extends AppCompatActivity implements ItemClickListener<MenuDrink> {
 
-	private RecyclerView recyclerView;
-	private Menu menu;
-	private Date responseDate;
-	private String placeId;
-	private SwipeRefreshLayout swipeRefreshLayout;
-	private DrinkAdapter drinkAdapter;
-	private long lastVisit;
+    private RecyclerView recyclerView;
+    private Menu menu;
+    private Date responseDate;
+    private String placeId;
+    private SwipeRefreshLayout swipeRefreshLayout;
+    private DrinkAdapter drinkAdapter;
+    private long lastVisit;
 
-	@Override
-	protected void onCreate(Bundle savedInstanceState) {
-		super.onCreate(savedInstanceState);
-		setContentView(R.layout.activity_drinks_menu);
-		Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
-		setSupportActionBar(toolbar);
-		placeId = getPlaceIdFromIntent();
-		Location location = DaoManager.with(this).selectLocation(placeId);
-		lastVisit = location.getLastVisit();
-		FloatingActionButton fab = (FloatingActionButton)findViewById(R.id.fab);
-		fab.setOnClickListener(new View.OnClickListener() {
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_drinks_menu);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        placeId = getPlaceIdFromIntent();
+        Location location = DaoManager.with(this).selectLocation(placeId);
+        lastVisit = location.getLastVisit();
 
-			@Override
-			public void onClick(View view) {
-				Intent addDrinkIntent = new Intent(DrinksMenuActivity.this, EditDrinkActivity.class);
-				addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, menu.getLocationId());
-				startActivity(addDrinkIntent);
-			}
-		});
-		swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipeRefresh);
-		swipeRefreshLayout.setEnabled(true);
-		swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        //Hier wird jetzt editiert
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
 
-			@Override public void onRefresh() {
-				loadData(true);
-			}
-		});
-		recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-		recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
-		DaoManager.with(this).incLocationVisitCount(placeId);
-	}
+            @Override
+            public void onClick(View view) {
+                AlertDialog.Builder builder = new AlertDialog.Builder(DrinksMenuActivity.this);
+                // Set the dialog title
+                builder.setTitle("Editiermodus")
+                        .setItems(new String[]{"Einzeln", "Nach Vorlage"}, new DialogInterface.OnClickListener() {
 
-	private String getPlaceIdFromIntent() {
-		Intent intent = getIntent();
-		String action = intent.getAction();
-		String data = intent.getDataString();
-		if (Intent.ACTION_VIEW.equals(action) && data != null) {
-			return data.substring(data.lastIndexOf("/") + 1);
-		}
-		else {
-			return intent.getStringExtra("PLACE_ID");
-		}
-	}
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                if (which == 0) {
+                                    Intent addDrinkIntentSingle = new Intent(DrinksMenuActivity.this, EditDrinkActivity.class);
+                                    addDrinkIntentSingle.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, menu.getLocationId());
+                                    startActivity(addDrinkIntentSingle);
+                                } else {
+                                    Intent addDrinkIntentTemplate = new Intent(DrinksMenuActivity.this, TemplateDrinkActivity.class);
+                                    startActivity(addDrinkIntentTemplate);
+                                }
+                            }
+                        });
+                builder.create().show();
+            }
+        });
 
-	@Override protected void onStart() {
-		super.onStart();
-		loadData(false);
-	}
+        swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.swipeRefresh);
+        swipeRefreshLayout.setEnabled(true);
+        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
 
-	private void loadData(boolean forceReload) {
-		swipeRefreshLayout.setRefreshing(true);
-		new MenuLoader(this).getForDatedResponse("/menu/" + placeId,
-				forceReload, new IonLoaderHelper.OnDatedResponse<Menu>() {
+            @Override
+            public void onRefresh() {
+                loadData(true);
+            }
+        });
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
+        DaoManager.with(this).incLocationVisitCount(placeId);
+    }
 
-					@Override
-					public void onDatedResponse(DatedResponse<Menu> response, Exception e) {
-						swipeRefreshLayout.setRefreshing(false);
-						if (e == null) {
-							processMenu(response.getContent(), response.getDate());
-						}
-					}
-				});
-	}
+    private String getPlaceIdFromIntent() {
+        Intent intent = getIntent();
+        String action = intent.getAction();
+        String data = intent.getDataString();
+        if (Intent.ACTION_VIEW.equals(action) && data != null) {
+            return data.substring(data.lastIndexOf("/") + 1);
+        } else {
+            return intent.getStringExtra("PLACE_ID");
+        }
+    }
 
-	private void processMenu(Menu menu, Date responseDate) {
-		this.menu = menu;
-		this.responseDate = responseDate;
-		setTitle(menu.getName());
-		AnalyticsUtils.with(this).sendScreen("/menu/" + menu.getName());
-		sortMenu(false);
-	}
+    @Override
+    protected void onStart() {
+        super.onStart();
+        loadData(false);
+    }
 
-	private void sortMenu(boolean byName) {
-		DrinkMenuComparator comparator = new DrinkMenuComparator(byName);
-		List<MenuDrink> sortedDrinks = new ArrayList<>(menu.getDrinks());
-		Collections.sort(sortedDrinks, comparator);
-		Set<Object> drinks = new HashSet<>();
-		for (MenuDrink menuDrink : sortedDrinks) {
-			drinks.add(Category.valueOf(menuDrink.getCategory()));
-		}
+    private void loadData(boolean forceReload) {
+        swipeRefreshLayout.setRefreshing(true);
+        new MenuLoader(this).getForDatedResponse("/menu/" + placeId,
+                forceReload, new IonLoaderHelper.OnDatedResponse<Menu>() {
 
-		if(drinkAdapter == null) {
-			drinkAdapter = new DrinkAdapter(new ArrayList<>(drinks), DrinksMenuActivity.this, lastVisit);
-			recyclerView.setAdapter(drinkAdapter);
-		}
-		else {
-			drinkAdapter.setDrinks(new ArrayList<>(drinks));
-		}
-	}
+                    @Override
+                    public void onDatedResponse(DatedResponse<Menu> response, Exception e) {
+                        swipeRefreshLayout.setRefreshing(false);
+                        if (e == null) {
+                            processMenu(response.getContent(), response.getDate());
+                        }
+                    }
+                });
+    }
 
-	@Override public void onItemClick(MenuDrink item) {
-		Intent addDrinkIntent = new Intent(DrinksMenuActivity.this, EditDrinkActivity.class);
-		addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, menu.getLocationId());
-		addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_DRINK, item);
-		startActivityForResult(addDrinkIntent, 1000);
-	}
+    private void processMenu(Menu menu, Date responseDate) {
+        this.menu = menu;
+        this.responseDate = responseDate;
+        setTitle(menu.getName());
+        AnalyticsUtils.with(this).sendScreen("/menu/" + menu.getName());
+        sortMenu(false);
+    }
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.action_sort: {
-				createDialog().show();
-				return true;
-			}
-		}
-		return super.onOptionsItemSelected(item);
-	}
+    private void sortMenu(boolean byName) {
+        DrinkMenuComparator comparator = new DrinkMenuComparator(byName);
+        List<MenuDrink> sortedDrinks = new ArrayList<>(menu.getDrinks());
+        Collections.sort(sortedDrinks, comparator);
+        Set<Object> drinks = new HashSet<>();
+        for (MenuDrink menuDrink : sortedDrinks) {
+        drinks.add(Category.valueOf(menuDrink.getCategory()));
+        }
 
-	@Override public boolean onCreateOptionsMenu(android.view.Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.drinkmenu_menu, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
+        if(drinkAdapter == null) {
+        drinkAdapter = new DrinkAdapter(new ArrayList<>(drinks), DrinksMenuActivity.this, lastVisit);
+        recyclerView.setAdapter(drinkAdapter);
+        }
+        else {
+        drinkAdapter.setDrinks(new ArrayList<>(drinks));
+        }
+    }
 
-	public Dialog createDialog() {
-		AlertDialog.Builder builder = new AlertDialog.Builder(this);
-		// Set the dialog title
-		builder.setTitle("Getränkesortierung")
-				.setItems(new String[] { "Nach Preis", "Nach Name" }, new DialogInterface.OnClickListener() {
+    @Override
+    public void onItemClick(MenuDrink item) {
+        Intent addDrinkIntent = new Intent(DrinksMenuActivity.this, EditDrinkActivity.class);
+        addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, menu.getLocationId());
+        addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_DRINK, item);
+        startActivityForResult(addDrinkIntent, 1000);
+    }
 
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						sortMenu(which == 1);
-					}
-				});
-		return builder.create();
-	}
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.action_sort: {
+                createDialog().show();
+                return true;
+            }
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(android.view.Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.drinkmenu_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    public Dialog createDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        // Set the dialog title
+        builder.setTitle("Getränkesortierung")
+                .setItems(new String[]{"Nach Preis", "Nach Name"}, new DialogInterface.OnClickListener() {
+
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        sortMenu(which == 1);
+                    }
+                });
+        return builder.create();
+    }
 }
