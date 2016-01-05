@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -18,6 +19,7 @@ import de.grundid.drinker.Category;
 import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.ItemClickListener;
 import de.grundid.drinker.R;
+import de.grundid.drinker.StringListAdapter;
 import de.grundid.drinker.storage.DaoManager;
 import de.grundid.drinker.storage.Location;
 import de.grundid.drinker.utils.AnalyticsUtils;
@@ -27,7 +29,9 @@ import de.grundid.drinker.utils.IonLoaderHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 public class DrinksMenuActivity extends AppCompatActivity implements ItemClickListener<MenuDrink> {
 
@@ -67,7 +71,7 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 			}
 		});
 		recyclerView = (RecyclerView)findViewById(R.id.recyclerView);
-		recyclerView.setLayoutManager(new LinearLayoutManager(this));
+		recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
 		DaoManager.with(this).incLocationVisitCount(placeId);
 	}
 
@@ -115,24 +119,17 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		DrinkMenuComparator comparator = new DrinkMenuComparator(byName);
 		List<MenuDrink> sortedDrinks = new ArrayList<>(menu.getDrinks());
 		Collections.sort(sortedDrinks, comparator);
-		List<Object> drinks = new ArrayList<>();
-		String lastCategory = "";
+		Set<Object> drinks = new HashSet<>();
 		for (MenuDrink menuDrink : sortedDrinks) {
-			if (!lastCategory.equals(menuDrink.getCategory())) {
-				drinks.add(Category.valueOf(menuDrink.getCategory()));
-			}
-			drinks.add(menuDrink);
-			lastCategory = menuDrink.getCategory();
+			drinks.add(Category.valueOf(menuDrink.getCategory()));
 		}
-		if (!drinks.isEmpty()) {
-			drinks.add(new Footer(responseDate, menu.getLastUpdated()));
-		}
+
 		if(drinkAdapter == null) {
-			drinkAdapter = new DrinkAdapter(drinks, DrinksMenuActivity.this, lastVisit);
+			drinkAdapter = new DrinkAdapter(new ArrayList<>(drinks), DrinksMenuActivity.this, lastVisit);
 			recyclerView.setAdapter(drinkAdapter);
 		}
 		else {
-			drinkAdapter.setDrinks(drinks);
+			drinkAdapter.setDrinks(new ArrayList<>(drinks));
 		}
 	}
 
