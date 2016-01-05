@@ -313,7 +313,6 @@ public class EditDrinkActivity extends AppCompatActivity {
         if(resetDescription) {
             drinkDescription.setText("");
         }
-        //TODO: Nachfragen ob requestFocus eigentlich noch funktioniert
         drinkName.requestFocus();
     }
 
