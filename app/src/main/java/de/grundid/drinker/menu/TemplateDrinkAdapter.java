@@ -43,33 +43,32 @@ public class TemplateDrinkAdapter extends EmptyStateAdapter {
         }
     }
 
-    @Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+    @Override
+    public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof DrinkTemplateViewHolder) {
-            DrinkTemplateViewHolder drinkViewHolder = (DrinkTemplateViewHolder)holder;
-            final MenuDrinkContainer menuDrink = (MenuDrinkContainer)elements.get(position);
+            DrinkTemplateViewHolder drinkViewHolder = (DrinkTemplateViewHolder) holder;
+            final MenuDrinkContainer menuDrink = (MenuDrinkContainer) elements.get(position);
             drinkViewHolder.update(menuDrink.getDrink());
             drinkViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(templateDrinkActivity);
-                    builder.setTitle("Editiermodus")
+                    builder.setTitle("Preis und Menge")
                             .setView(LayoutInflater.from(templateDrinkActivity).inflate(R.layout.template_popup, null))
-                            .setItems(new String[]{"Einzeln", "Nach Vorlage"}, new DialogInterface.OnClickListener() {
+                            .setPositiveButton(
+                                    "Hinzufügen", new DialogInterface.OnClickListener() {
+                                        @Override
+                                        public void onClick(DialogInterface dialog, int which) {
 
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-
-                                }
-                            });
+                                        }
+                                    }).setNegativeButton("Abbrechen", null);
                     builder.create().show();
 
                 }
             });
-        }
-        else if (holder instanceof SectionViewHolder) {
-            ((SectionViewHolder)holder).update((Category)elements.get(position));
-        }
-        else {
+        } else if (holder instanceof SectionViewHolder) {
+            ((SectionViewHolder) holder).update((Category) elements.get(position));
+        } else {
             super.onBindViewHolder(holder, position);
         }
     }
