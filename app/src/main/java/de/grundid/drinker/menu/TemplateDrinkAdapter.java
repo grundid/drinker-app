@@ -3,6 +3,7 @@ package de.grundid.drinker.menu;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -19,6 +20,7 @@ import de.grundid.drinker.utils.EmptyStateAdapter;
 
 public class TemplateDrinkAdapter extends EmptyStateAdapter {
 
+    public static final String EXTRA_LOCATION_ID = "EXTRA_LOCATION_ID";
     private static final int TYPE_SECTION = 1;
     private static final int TYPE_DRINK = 2;
     private final TemplateDrinkActivity templateDrinkActivity;
@@ -46,26 +48,10 @@ public class TemplateDrinkAdapter extends EmptyStateAdapter {
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
         if (holder instanceof DrinkTemplateViewHolder) {
-            DrinkTemplateViewHolder drinkViewHolder = (DrinkTemplateViewHolder) holder;
+            final DrinkTemplateViewHolder drinkViewHolder = (DrinkTemplateViewHolder) holder;
             final MenuDrinkContainer menuDrink = (MenuDrinkContainer) elements.get(position);
             drinkViewHolder.update(menuDrink.getDrink());
-            drinkViewHolder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    AlertDialog.Builder builder = new AlertDialog.Builder(templateDrinkActivity);
-                    builder.setTitle("Preis und Menge")
-                            .setView(LayoutInflater.from(templateDrinkActivity).inflate(R.layout.template_popup, null))
-                            .setPositiveButton(
-                                    "Hinzufügen", new DialogInterface.OnClickListener() {
-                                        @Override
-                                        public void onClick(DialogInterface dialog, int which) {
-
-                                        }
-                                    }).setNegativeButton("Abbrechen", null);
-                    builder.create().show();
-
-                }
-            });
+            drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, templateDrinkActivity.getIntent().getStringExtra(EXTRA_LOCATION_ID), position));
         } else if (holder instanceof SectionViewHolder) {
             ((SectionViewHolder) holder).update((Category) elements.get(position));
         } else {

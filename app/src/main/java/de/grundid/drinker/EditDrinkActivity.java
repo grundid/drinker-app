@@ -63,7 +63,7 @@ public class EditDrinkActivity extends AppCompatActivity {
     private MenuDrink menuDrink;
     private LinearLayout previousDrink;
     private Suggest suggest;
-    CategoryHelper categories;
+    private CategoryHelper categories;
 
     public class NumericDigitsKeyListener extends DigitsKeyListener {
 
@@ -254,7 +254,7 @@ public class EditDrinkActivity extends AppCompatActivity {
     }
 
     private void updateLastDrink(DrinkModel drinkModel) {
-        DrinkViewHolder viewHolder = new DrinkViewHolder(previousDrink);
+        DrinkViewHolder viewHolder =  new DrinkViewHolder(previousDrink);
         viewHolder.update(drinkModel, Long.MAX_VALUE);
         viewHolder.hideMoreActions();
         previousDrink.setVisibility(View.VISIBLE);

@@ -35,6 +35,8 @@ public class AddDrinkListener implements View.OnClickListener {
 						else {
 							Intent addDrinkIntentTemplate = new Intent(activity,
 									TemplateDrinkActivity.class);
+							addDrinkIntentTemplate
+									.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, locationId);
 							activity.startActivity(addDrinkIntentTemplate);
 						}
 					}
