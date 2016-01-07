@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.support.v7.widget.DialogTitle;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import de.grundid.drinker.EditDrinkActivity;
@@ -31,7 +33,11 @@ public class TemplateAddDrinkListener implements View.OnClickListener {
 							"Hinzufügen", new DialogInterface.OnClickListener() {
 								@Override
 								public void onClick(DialogInterface dialog, int which) {
-									activity.addDrink(position, activity.findViewById(R.id.drinkPrice).toString(), activity.findViewById(R.id.drinkVolume).toString());
+									View inputFields = LayoutInflater.from(activity).inflate(R.layout.template_popup, null);
+									TextView price = (TextView) inputFields.findViewById(R.id.drinkPrice);
+									TextView volume = (TextView) inputFields.findViewById(R.id.drinkVolume);
+									Toast.makeText(activity, price.getText().toString(), Toast.LENGTH_LONG).show();
+									activity.addDrink(position, price.getText().toString(), volume.getText().toString());
 								}
 							}).setNegativeButton("Abbrechen", null);
 			builder.create().show();
