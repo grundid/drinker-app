@@ -49,4 +49,7 @@ public class DrinkTemplateViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
+    public CheckBox getCheckbox() {
+        return checkbox;
+    }
 }

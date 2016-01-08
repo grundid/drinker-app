@@ -51,7 +51,7 @@ public class TemplateDrinkAdapter extends EmptyStateAdapter {
             final DrinkTemplateViewHolder drinkViewHolder = (DrinkTemplateViewHolder) holder;
             final MenuDrinkContainer menuDrink = (MenuDrinkContainer) elements.get(position);
             drinkViewHolder.update(menuDrink.getDrink());
-            drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, templateDrinkActivity.getIntent().getStringExtra(EXTRA_LOCATION_ID), position));
+            drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, menuDrink));
         } else if (holder instanceof SectionViewHolder) {
             ((SectionViewHolder) holder).update((Category) elements.get(position));
         } else {
