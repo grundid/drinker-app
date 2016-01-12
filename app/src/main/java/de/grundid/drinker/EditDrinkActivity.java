@@ -65,7 +65,7 @@ public class EditDrinkActivity extends AppCompatActivity {
     private Suggest suggest;
     private CategoryHelper categories;
 
-    public class NumericDigitsKeyListener extends DigitsKeyListener {
+    public static class NumericDigitsKeyListener extends DigitsKeyListener {
 
         @Override
         protected char[] getAcceptedChars() {

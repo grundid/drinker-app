@@ -40,7 +40,7 @@ public class TemplateDrinkActivity extends AppCompatActivity {
     public static final String EXTRA_LOCATION_ID = "EXTRA_LOCATION_ID";
     private RecyclerView recyclerView;
     private MenuDrink[] templates;
-    private HashMap<String, MenuDrinkContainer> drinks = new HashMap<String, MenuDrinkContainer>();
+    private ArrayList<MenuDrinkContainer> drinks;
     private boolean saveInProcess = false;
 
     @Override
@@ -56,7 +56,7 @@ public class TemplateDrinkActivity extends AppCompatActivity {
         findViewById(R.id.saveAll).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                saveAll();
+                save();
             }
         });
     }
@@ -92,81 +92,10 @@ public class TemplateDrinkActivity extends AppCompatActivity {
         return drinks;
     }
 
-    public void addDrink(String key, MenuDrinkContainer drink){
-        if(!(drinks.containsKey(key) && drinks.get(key).getDrink() == drink.getDrink())){
-            drinks.put(key, drink);
-        }
-        else
-        {
-            Toast.makeText(TemplateDrinkActivity.this, drink.getDrink().getName().toString() + drinks.get(key).getDrink().getName().toString(), Toast.LENGTH_SHORT).show();
-        }
+    public void addDrink(MenuDrinkContainer drink){
+        drinks.add(drink);
     }
 
-    private synchronized void saveAll(){
-        if(!drinks.isEmpty()){
-            for (final Map.Entry<String, MenuDrinkContainer> entry : drinks.entrySet()) {
-                final MenuDrink drink = entry.getValue().getDrink();
-
-                    if (!saveInProcess) {
-                        saveInProcess = true;
-                        final DrinkModel drinkModel = new DrinkModel();
-                        //TODO: location ID
-                        drinkModel.setLocationId(getIntent().getStringExtra(EXTRA_LOCATION_ID));
-                        drinkModel.setName(drink.getName());
-                        drinkModel.setBrand(drink.getBrand());
-                        drinkModel.setVolume(drink.getVolume());
-                        drinkModel.setCategory(drink.getCategory());
-                        drinkModel.setPrice(drink.getPrice());
-                        drinkModel.setDescription(drink.getDescription());
-                        if (DrinkModelHelper.isDrinkModelValid(drinkModel)) {
-                            String method = "POST";
-                            //TODO: Drink ID
-                            String path = "/drink";
-                            Ion.with(this).load(method, Config.BASE_URL + path).
-                                    setHeader("X-User-UUID", PreferencesUtils.getUuid(this)).
-                                    setJsonPojoBody(drinkModel).asString()
-                                    .withResponse().setCallback(
-                                    new FutureCallback<Response<String>>() {
-
-                                        @Override
-                                        public void onCompleted(Exception e, Response<String> result) {
-                                            saveInProcess = false;
-                                            if (e == null && result.getHeaders().code() == 200) {
-                                            } else {
-                                                Toast.makeText(TemplateDrinkActivity.this,
-                                                        "Fehler beim Speichern: " + result.getHeaders().code(), Toast.LENGTH_SHORT)
-                                                        .show();
-                                                sleep(1000);
-                                            }
-                                        }
-                                    });
-                        } else {
-                            AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                            builder.setTitle("Fehlerhafte Eingaben");
-                            builder.setMessage("Bitte sinnvolle Werte eingeben");
-                            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    saveInProcess = false;
-                                    finish();
-                                }
-                            });
-                            builder.create().show();
-                        }
-                    }
-
-            }
-
-            Toast.makeText(TemplateDrinkActivity.this, "Speichern erfolgreich", Toast.LENGTH_SHORT);
-            sleep(1000);
-            finish();
-        }
-
+    private void save() {
     }
-
-    public void deleteDrink(String name){
-        drinks.remove(name);
-    }
-
 }
