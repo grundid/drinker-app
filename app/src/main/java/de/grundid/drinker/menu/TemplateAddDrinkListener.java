@@ -20,17 +20,20 @@ public class TemplateAddDrinkListener implements View.OnClickListener {
 
     private TemplateDrinkActivity activity;
     private MenuDrinkContainer menuDrink;
+    private TemplateDrinkAdapter adapter;
+    private DrinkTemplateViewHolder viewHolder;
 
-    public TemplateAddDrinkListener(TemplateDrinkActivity activity, MenuDrinkContainer menuDrink) {
+    public TemplateAddDrinkListener(TemplateDrinkActivity activity, MenuDrinkContainer menuDrink, TemplateDrinkAdapter templateDrinkAdapter, DrinkTemplateViewHolder drinkViewHolder) {
         this.activity = activity;
         this.menuDrink = menuDrink;
+        this.adapter = templateDrinkAdapter;
+        this.viewHolder = drinkViewHolder;
     }
 
     @Override
     public void onClick(View v) {
         final View inputFields = LayoutInflater.from(activity).inflate(R.layout.template_popup, null);
-        final CheckBox checkBox = (CheckBox) v.findViewById(R.id.checkbox);
-        if(!checkBox.isChecked()) {
+        if(!menuDrink.isChecked()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Preis und Menge")
                     .setView(inputFields)
@@ -47,7 +50,8 @@ public class TemplateAddDrinkListener implements View.OnClickListener {
                                     menuDrink.setDrink(drink);
                                     if (price.getText().toString() != null && volume.getText() != null && drink.getName().toString() != null) {
                                         activity.addDrink(drink.getName().toString(), menuDrink);
-                                        checkBox.setChecked(true);
+                                        menuDrink.setChecked(true);
+                                        viewHolder.setChecked(true);
                                     } else {
                                         Toast.makeText(activity, "Bitte gültige Werte eintragen", Toast.LENGTH_SHORT);
                                     }
@@ -56,10 +60,12 @@ public class TemplateAddDrinkListener implements View.OnClickListener {
             builder.create().show();
         } else {
             MenuDrink drink = menuDrink.getDrink();
-            checkBox.setChecked(false);
+            viewHolder.setChecked(false);
+            menuDrink.setChecked(false);
             activity.deleteDrink(drink.getName());
         }
 
+        adapter.notifyDataSetChanged();
 
     }
 }

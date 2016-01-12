@@ -4,6 +4,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
@@ -49,7 +50,8 @@ public class DrinkTemplateViewHolder extends RecyclerView.ViewHolder {
         }
     }
 
-    public CheckBox getCheckbox() {
-        return checkbox;
+    public void setChecked(boolean checked){
+        checkbox.setChecked(checked);
+        Toast.makeText(itemView.getContext(), "Box geändert", Toast.LENGTH_SHORT).show();
     }
 }

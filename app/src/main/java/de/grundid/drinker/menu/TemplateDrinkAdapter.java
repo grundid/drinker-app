@@ -20,7 +20,6 @@ import de.grundid.drinker.utils.EmptyStateAdapter;
 
 public class TemplateDrinkAdapter extends EmptyStateAdapter {
 
-    public static final String EXTRA_LOCATION_ID = "EXTRA_LOCATION_ID";
     private static final int TYPE_SECTION = 1;
     private static final int TYPE_DRINK = 2;
     private final TemplateDrinkActivity templateDrinkActivity;
@@ -50,8 +49,9 @@ public class TemplateDrinkAdapter extends EmptyStateAdapter {
         if (holder instanceof DrinkTemplateViewHolder) {
             final DrinkTemplateViewHolder drinkViewHolder = (DrinkTemplateViewHolder) holder;
             final MenuDrinkContainer menuDrink = (MenuDrinkContainer) elements.get(position);
+            //TODO: Die update Methode umändern, sodass sie auch das Checked Argument übernimmt
             drinkViewHolder.update(menuDrink.getDrink());
-            drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, menuDrink));
+            drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, menuDrink, this, drinkViewHolder));
         } else if (holder instanceof SectionViewHolder) {
             ((SectionViewHolder) holder).update((Category) elements.get(position));
         } else {
