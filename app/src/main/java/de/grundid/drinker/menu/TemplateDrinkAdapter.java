@@ -49,9 +49,8 @@ public class TemplateDrinkAdapter extends EmptyStateAdapter {
         if (holder instanceof DrinkTemplateViewHolder) {
             final DrinkTemplateViewHolder drinkViewHolder = (DrinkTemplateViewHolder) holder;
             final MenuDrinkContainer menuDrink = (MenuDrinkContainer) elements.get(position);
-            //TODO: Die update Methode umändern, sodass sie auch das Checked Argument übernimmt
-            drinkViewHolder.update(menuDrink.getDrink());
-            drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, menuDrink, this, drinkViewHolder));
+            drinkViewHolder.update(menuDrink.getDrink(), menuDrink.isChecked());
+            drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, menuDrink, this));
         } else if (holder instanceof SectionViewHolder) {
             ((SectionViewHolder) holder).update((Category) elements.get(position));
         } else {

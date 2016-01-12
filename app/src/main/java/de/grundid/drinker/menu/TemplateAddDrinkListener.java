@@ -1,14 +1,9 @@
 package de.grundid.drinker.menu;
 
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.hardware.camera2.CameraManager;
-import android.support.v7.widget.DialogTitle;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.CheckBox;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -21,19 +16,22 @@ public class TemplateAddDrinkListener implements View.OnClickListener {
     private TemplateDrinkActivity activity;
     private MenuDrinkContainer menuDrink;
     private TemplateDrinkAdapter adapter;
-    private DrinkTemplateViewHolder viewHolder;
 
-    public TemplateAddDrinkListener(TemplateDrinkActivity activity, MenuDrinkContainer menuDrink, TemplateDrinkAdapter templateDrinkAdapter, DrinkTemplateViewHolder drinkViewHolder) {
+    public TemplateAddDrinkListener(TemplateDrinkActivity activity, MenuDrinkContainer menuDrink, TemplateDrinkAdapter templateDrinkAdapter) {
         this.activity = activity;
         this.menuDrink = menuDrink;
         this.adapter = templateDrinkAdapter;
-        this.viewHolder = drinkViewHolder;
     }
 
     @Override
     public void onClick(View v) {
         final View inputFields = LayoutInflater.from(activity).inflate(R.layout.template_popup, null);
-        if(!menuDrink.isChecked()) {
+        final TextView price = (TextView) inputFields.findViewById(R.id.drinkPrice);
+        price.setKeyListener(new EditDrinkActivity.NumericDigitsKeyListener());
+        final TextView volume = (TextView) inputFields.findViewById(R.id.drinkVolume);
+        volume.setKeyListener(new EditDrinkActivity.NumericDigitsKeyListener());
+
+        if (!menuDrink.isChecked()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
             builder.setTitle("Preis und Menge")
                     .setView(inputFields)
@@ -41,31 +39,25 @@ public class TemplateAddDrinkListener implements View.OnClickListener {
                             "Hinzufügen", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-
-                                    TextView price = (TextView) inputFields.findViewById(R.id.drinkPrice);
-                                    TextView volume = (TextView) inputFields.findViewById(R.id.drinkVolume);
                                     MenuDrink drink = menuDrink.getDrink();
                                     drink.setPrice(DrinkModelHelper.parseDrinkPrice(price.getText()));
                                     drink.setVolume(DrinkModelHelper.parseDrinkVolume(volume.getText()));
-                                    menuDrink.setDrink(drink);
-                                    if (price.getText().toString() != null && volume.getText() != null && drink.getName().toString() != null) {
-                                        activity.addDrink(drink.getName().toString(), menuDrink);
+
+                                    if (price.getText() != null && volume.getText() != null && drink.getName() != null) {
+                                        activity.addDrink(menuDrink);
                                         menuDrink.setChecked(true);
-                                        viewHolder.setChecked(true);
+                                        adapter.notifyDataSetChanged();
                                     } else {
-                                        Toast.makeText(activity, "Bitte gültige Werte eintragen", Toast.LENGTH_SHORT);
+                                        Toast.makeText(activity, "Bitte gültige Werte eintragen", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                             }).setNegativeButton("Abbrechen", null);
             builder.create().show();
         } else {
             MenuDrink drink = menuDrink.getDrink();
-            viewHolder.setChecked(false);
             menuDrink.setChecked(false);
-            activity.deleteDrink(drink.getName());
+            adapter.notifyDataSetChanged();
         }
-
-        adapter.notifyDataSetChanged();
 
     }
 }

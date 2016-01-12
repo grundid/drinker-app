@@ -34,11 +34,12 @@ public class DrinkTemplateViewHolder extends RecyclerView.ViewHolder {
         checkbox = (CheckBox)itemView.findViewById(R.id.checkbox);
     }
 
-    public void update(SimpleDrink drink) {
+    public void update(SimpleDrink drink, boolean checked) {
         brand.setVisibility(Utils.hasText(drink.getBrand()) ? View.VISIBLE : View.GONE);
         brand.setText(drink.getBrand());
         name.setText(drink.getName());
-        price.setText(priceFormat.format((double)drink.getPrice() / 100));
+        price.setText(priceFormat.format((double) drink.getPrice() / 100));
+        volume.setText(volumeFormat.format((double)drink.getVolume() / 1000));
         volume.setVisibility(drink.getVolume() != null ? View.VISIBLE : View.GONE);
 
         if (Utils.hasText(drink.getDescription())) {
@@ -48,10 +49,6 @@ public class DrinkTemplateViewHolder extends RecyclerView.ViewHolder {
         else {
             description.setVisibility(View.INVISIBLE);
         }
-    }
-
-    public void setChecked(boolean checked){
         checkbox.setChecked(checked);
-        Toast.makeText(itemView.getContext(), "Box geändert", Toast.LENGTH_SHORT).show();
     }
 }
