@@ -47,13 +47,14 @@ public class TemplateAddDrinkContainerListener implements View.OnClickListener {
         volume.setAdapter(ArrayAdapter.createFromResource(activity,
                 R.array.volumes, android.R.layout.simple_list_item_1));
 
+
         try {
-            price.setText(priceFormat.format((double) drink.getPrice() / 100));
+            price.setText(priceFormat.format((double) drink.getVolumePrices().get(0).getPrice() / 100));
         } catch (Exception e) {
             price.setText(Integer.toString(0));
         }
         try {
-            volume.setText(volumeFormat.format((double) drink.getVolume() / 1000));
+            volume.setText(volumeFormat.format((double) drink.getVolumePrices().get(0).getVolume() / 1000));
         } catch (Exception e) {
             volume.setText(Integer.toString(0));
         }
@@ -66,8 +67,10 @@ public class TemplateAddDrinkContainerListener implements View.OnClickListener {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 MenuDrink newDrink = new MenuDrink();
-                                newDrink.setPrice(DrinkModelHelper.parseDrinkPrice(price.getText()));
-                                newDrink.setVolume(DrinkModelHelper.parseDrinkVolume(volume.getText()));
+                                VolumePrice volumePricePair = new VolumePrice();
+                                volumePricePair.setPrice(DrinkModelHelper.parseDrinkPrice(price.getText()));
+                                volumePricePair.setVolume(DrinkModelHelper.parseDrinkVolume(volume.getText()));
+                                newDrink.addVolumePrice(volumePricePair);
                                 newDrink.setBrand(drink.getBrand());
                                 newDrink.setName(drink.getName());
                                 newDrink.setDescription(drink.getDescription());

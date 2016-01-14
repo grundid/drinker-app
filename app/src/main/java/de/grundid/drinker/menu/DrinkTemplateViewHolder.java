@@ -36,7 +36,7 @@ public class DrinkTemplateViewHolder extends RecyclerView.ViewHolder {
         brand.setVisibility(Utils.hasText(drink.getBrand()) ? View.VISIBLE : View.GONE);
         brand.setText(drink.getBrand());
         name.setText(drink.getName());
-/*        price.setText(priceFormat.format((double) drink.getPrice() / 100));
+        /*price.setText(priceFormat.format((double) drink.getPrice() / 100));
 		volume.setText(volumeFormat.format((double)drink.getVolume() / 1000));
         volume.setVisibility(drink.getVolume() != null ? View.VISIBLE : View.GONE);*/
 

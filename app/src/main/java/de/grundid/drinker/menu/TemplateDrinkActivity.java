@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import de.grundid.drinker.Category;
+import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.R;
 import de.grundid.drinker.utils.DatedResponse;
 import de.grundid.drinker.utils.IonLoaderHelper;
@@ -21,6 +22,7 @@ public class TemplateDrinkActivity extends AppCompatActivity {
     private MenuDrink[] templates;
     private ArrayList<MenuDrinkContainer> drinks = new ArrayList<MenuDrinkContainer>();
     private boolean saveInProcess = false;
+    private String category;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,7 +30,8 @@ public class TemplateDrinkActivity extends AppCompatActivity {
         setContentView(R.layout.activity_template_drink);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-        setTitle("Vorlagen");
+        category = getIntent().getStringExtra(EditDrinkActivity.EXTRA_CATEGORY);
+        setTitle("Vorlagen " + category);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         loadData(false);
@@ -58,15 +61,13 @@ public class TemplateDrinkActivity extends AppCompatActivity {
         recyclerView.setAdapter(new TemplateDrinkAdapter(convertToContainers(), this));
     }
 
+
+    //TODO: HIER!!!!ELF!
     private List<Object> convertToContainers() {;
         List<Object> drinks = new ArrayList<>();
-        String lastCategory = "";
         for (MenuDrink menuDrink : templates) {
-            if (!lastCategory.equals(menuDrink.getCategory())) {
-                drinks.add(Category.valueOf(menuDrink.getCategory()));
-            }
-            drinks.add(new MenuDrinkContainer(menuDrink, false));
-            lastCategory = menuDrink.getCategory();
+            if(menuDrink.getCategory().equals(category))
+                drinks.add(new MenuDrinkContainer(menuDrink, false));
         }
         return drinks;
     }
