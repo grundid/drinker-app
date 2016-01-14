@@ -66,7 +66,7 @@ public class TemplateDrinkActivity extends AppCompatActivity {
     private List<Object> convertToContainers() {;
         List<Object> drinks = new ArrayList<>();
         for (MenuDrink menuDrink : templates) {
-            if(menuDrink.getCategory().equals(category))
+            if(menuDrink.getCategory().toLowerCase().equals(category.toLowerCase()))
                 drinks.add(new MenuDrinkContainer(menuDrink, false));
         }
         return drinks;
