@@ -26,8 +26,8 @@ import com.koushikdutta.ion.Ion;
 import de.grundid.drinker.addplace.AddPlaceActivity;
 import de.grundid.drinker.addplace.NewPlace;
 import de.grundid.drinker.location.LocationAdapter;
+import de.grundid.drinker.menu.DrinksMenuActivity;
 import de.grundid.drinker.menu.Menu;
-import de.grundid.drinker.menu.SectionsActivity;
 import de.grundid.drinker.storage.DaoManager;
 import de.grundid.drinker.utils.AnalyticsUtils;
 import de.grundid.drinker.utils.PlaceWrapper;
@@ -174,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 	}
 
 	@Override public void onItemClick(String placeId) {
-		Intent intent = new Intent(this, SectionsActivity.class);
+		Intent intent = new Intent(this, DrinksMenuActivity.class);
 		intent.putExtra("PLACE_ID", placeId);
 		startActivity(intent);
 	}

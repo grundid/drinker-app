@@ -1,6 +1,5 @@
 package de.grundid.drinker.menu;
 
-import android.support.v7.view.menu.MenuView;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.ImageButton;
@@ -46,7 +45,7 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 		brand.setVisibility(Utils.hasText(drink.getBrand()) ? View.VISIBLE : View.GONE);
 		brand.setText(drink.getBrand());
 		name.setText(drink.getName());
-		price.setText(priceFormat.format((double)drink.getPrice() / 100));
+/* FIXME		price.setText(priceFormat.format((double)drink.getPrice() / 100));
 		volume.setVisibility(drink.getVolume() != null ? View.VISIBLE : View.GONE);
 		if (Double.isNaN(drink.getPricePerVolume())) {
 			pricePerVolume.setVisibility(View.INVISIBLE);
@@ -57,7 +56,7 @@ public class DrinkViewHolder extends RecyclerView.ViewHolder {
 					priceFormat.format(drink.getPricePerVolume())
 							+ " / 100ml");
 			pricePerVolume.setVisibility(View.VISIBLE);
-		}
+		}*/
 		if (Utils.hasText(drink.getDescription())) {
 			description.setText(drink.getDescription());
 			description.setVisibility(View.VISIBLE);

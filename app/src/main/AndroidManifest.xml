@@ -35,22 +35,6 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-                android:name=".menu.SectionsActivity"
-                android:screenOrientation="portrait"
-                android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="grundid.de"
-                    android:pathPrefix="/drinkerApp/"
-                    android:scheme="http" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".EditDrinkActivity"
             android:screenOrientation="portrait">
             <intent-filter>

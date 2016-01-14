@@ -3,20 +3,20 @@ package de.grundid.drinker.menu;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import de.grundid.drinker.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MenuDrink implements Parcelable, SimpleDrink {
+public class MenuDrink implements SimpleDrink, Parcelable {
 
 	private String drinkId;
 	private String name;
 	private String brand;
-	private int price;
-	private Integer volume;
 	private String description;
 	private String category;
-	private transient Double pricePerVolume;
 	private long modifiedDate;
+	private List<VolumePrice> volumePrices;
 
 	public MenuDrink() {
 	}
@@ -25,13 +25,10 @@ public class MenuDrink implements Parcelable, SimpleDrink {
 		drinkId = in.readString();
 		name = in.readString();
 		brand = in.readString();
-		price = in.readInt();
 		description = in.readString();
 		category = in.readString();
-		volume = in.readInt();
-		if (volume == -1) {
-			volume = null;
-		}
+		modifiedDate = in.readLong();
+		volumePrices = in.readArrayList(MenuDrink.class.getClassLoader());
 	}
 
 	public static final Creator<MenuDrink> CREATOR = new Creator<MenuDrink>() {
@@ -47,12 +44,19 @@ public class MenuDrink implements Parcelable, SimpleDrink {
 		}
 	};
 
-	@Override
-	public Double getPricePerVolume() {
-		if (pricePerVolume == null) {
-			pricePerVolume = Utils.getPricePerVolume(price, volume);
+	public List<VolumePrice> getVolumePrices() {
+		return volumePrices;
+	}
+
+	public void setVolumePrices(List<VolumePrice> volumePrices) {
+		this.volumePrices = volumePrices;
+	}
+
+	public void addVolumePrice(VolumePrice volumePrice) {
+		if (volumePrices == null) {
+			volumePrices = new ArrayList<>();
 		}
-		return pricePerVolume;
+		volumePrices.add(volumePrice);
 	}
 
 	@Override
@@ -73,30 +77,12 @@ public class MenuDrink implements Parcelable, SimpleDrink {
 		this.brand = brand;
 	}
 
-	@Override
-	public int getPrice() {
-		return price;
-	}
-
-	public void setPrice(int price) {
-		this.price = price;
-	}
-
 	public String getDrinkId() {
 		return drinkId;
 	}
 
 	public void setDrinkId(String drinkId) {
 		this.drinkId = drinkId;
-	}
-
-	@Override
-	public Integer getVolume() {
-		return volume;
-	}
-
-	public void setVolume(Integer volume) {
-		this.volume = volume;
 	}
 
 	@Override
@@ -108,10 +94,6 @@ public class MenuDrink implements Parcelable, SimpleDrink {
 		this.description = description;
 	}
 
-	@Override public int describeContents() {
-		return 0;
-	}
-
 	@Override
 	public String getCategory() {
 		return category;
@@ -121,16 +103,6 @@ public class MenuDrink implements Parcelable, SimpleDrink {
 		this.category = category;
 	}
 
-	@Override public void writeToParcel(Parcel dest, int flags) {
-		dest.writeString(drinkId);
-		dest.writeString(name);
-		dest.writeString(brand);
-		dest.writeInt(price);
-		dest.writeString(description);
-		dest.writeString(category);
-		dest.writeInt(volume == null ? -1 : volume.intValue());
-	}
-
 	@Override
 	public long getModifiedDate() {
 		return modifiedDate;
@@ -138,5 +110,19 @@ public class MenuDrink implements Parcelable, SimpleDrink {
 
 	public void setModifiedDate(long modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	@Override public int describeContents() {
+		return 0;
+	}
+
+	@Override public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(drinkId);
+		dest.writeString(name);
+		dest.writeString(brand);
+		dest.writeString(description);
+		dest.writeString(category);
+		dest.writeLong(modifiedDate);
+		dest.writeList(volumePrices);
 	}
 }
