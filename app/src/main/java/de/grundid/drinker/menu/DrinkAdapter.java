@@ -23,7 +23,18 @@ public class DrinkAdapter extends EmptyStateAdapter {
 	private final ItemClickListener<MenuDrink> itemClickListener;
 	private final long lastVisit;
 
-	public DrinkAdapter(List<Object> drinks, ItemClickListener<MenuDrink> itemClickListener, long lastVisit) {
+    static DrinkAdapter getInstance(Map<String, List<MenuDrink>> drinks, ItemClickListener<MenuDrink> itemClickListener, long lastVisit){
+
+        List<Object> categories = new ArrayList<>();
+
+        for (Map.Entry<String, List<MenuDrink>> entry : drinks.entrySet()) {
+            categories.add((Object)new CategoryWithDrinksModel(entry.getKey(), entry.getValue()));
+        }
+        return new DrinkAdapter(categories, itemClickListener, lastVisit);
+    }
+
+	private DrinkAdapter(List<Object> drinks, ItemClickListener<MenuDrink> itemClickListener, long lastVisit) {
+
 		super(drinks, R.string.empty_state_drinksmenu);
 		this.itemClickListener = itemClickListener;
 		this.lastVisit = lastVisit;
@@ -93,7 +104,7 @@ public class DrinkAdapter extends EmptyStateAdapter {
 		}
 	}
 
-	public void setDrinks(List<Object> drinks) {
+	public void setDrinks(Map<String, List<MenuDrink>> drinks) {
 		this.elements = drinks;
 		notifyDataSetChanged();
 	}

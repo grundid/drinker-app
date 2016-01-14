@@ -26,7 +26,9 @@ import de.grundid.drinker.utils.IonLoaderHelper;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DrinksMenuActivity extends AppCompatActivity implements ItemClickListener<MenuDrink>,
 		SwipeRefreshLayout.OnRefreshListener {
@@ -101,21 +103,17 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 	}
 
 	private void sortMenu(boolean byName) {
-		DrinkMenuComparator comparator = new DrinkMenuComparator(byName);
-		List<MenuDrink> sortedDrinks = new ArrayList<>(menu.getDrinks());
-		Collections.sort(sortedDrinks, comparator);
-		List<Object> drinks = new ArrayList<>();
-		String lastCategory = "";
-		for (MenuDrink menuDrink : sortedDrinks) {
-			if (!lastCategory.equals(menuDrink.getCategory())) {
-				drinks.add(Category.valueOf(menuDrink.getCategory()));
+		Map<String, List<MenuDrink>> drinks = new HashMap<>();
+		for (MenuDrink menuDrink : menu.getDrinks()) {
+
+			List<MenuDrink> menuDrinks = drinks.get(menuDrink.getCategory());
+			if(menuDrinks==null){
+				menuDrinks = new ArrayList<>();
+				drinks.put(menuDrink.getCategory(),menuDrinks);
 			}
-			drinks.add(menuDrink);
-			lastCategory = menuDrink.getCategory();
+			menuDrinks.add(menuDrink);
 		}
-		if (!drinks.isEmpty()) {
-			drinks.add(new Footer(responseDate, menu.getLastUpdated()));
-		}
+
 		if (drinkAdapter == null) {
 			drinkAdapter = new DrinkAdapter(drinks, DrinksMenuActivity.this, lastVisit);
 			recyclerView.setAdapter(drinkAdapter);
@@ -155,7 +153,7 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		// Set the dialog title
 		builder.setTitle("Getränkesortierung")
-				.setItems(new String[] { "Nach Preis", "Nach Name" }, new DialogInterface.OnClickListener() {
+				.setItems(new String[]{"Nach Preis", "Nach Name"}, new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {
