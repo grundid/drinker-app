@@ -40,7 +40,7 @@ public class TemplateDrinkActivity extends AppCompatActivity {
     public static final String EXTRA_LOCATION_ID = "EXTRA_LOCATION_ID";
     private RecyclerView recyclerView;
     private MenuDrink[] templates;
-    private ArrayList<MenuDrinkContainer> drinks;
+    private ArrayList<MenuDrinkContainer> drinks = new ArrayList<MenuDrinkContainer>();
     private boolean saveInProcess = false;
 
     @Override

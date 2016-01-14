@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -17,7 +19,7 @@ public class TemplateAddDrinkListener implements View.OnClickListener {
     private MenuDrinkContainer menuDrink;
     private TemplateDrinkAdapter adapter;
 
-    public TemplateAddDrinkListener(TemplateDrinkActivity activity, MenuDrinkContainer menuDrink, TemplateDrinkAdapter templateDrinkAdapter) {
+    public TemplateAddDrinkListener(TemplateDrinkActivity activity, TemplateDrinkAdapter templateDrinkAdapter, MenuDrinkContainer menuDrink) {
         this.activity = activity;
         this.menuDrink = menuDrink;
         this.adapter = templateDrinkAdapter;
@@ -28,8 +30,10 @@ public class TemplateAddDrinkListener implements View.OnClickListener {
         final View inputFields = LayoutInflater.from(activity).inflate(R.layout.template_popup, null);
         final TextView price = (TextView) inputFields.findViewById(R.id.drinkPrice);
         price.setKeyListener(new EditDrinkActivity.NumericDigitsKeyListener());
-        final TextView volume = (TextView) inputFields.findViewById(R.id.drinkVolume);
+        final AutoCompleteTextView volume = (AutoCompleteTextView) inputFields.findViewById(R.id.drinkVolume);
         volume.setKeyListener(new EditDrinkActivity.NumericDigitsKeyListener());
+        volume.setAdapter(ArrayAdapter.createFromResource(activity,
+                R.array.volumes, android.R.layout.simple_list_item_1));
 
         if (!menuDrink.isChecked()) {
             AlertDialog.Builder builder = new AlertDialog.Builder(activity);
