@@ -1,19 +1,30 @@
 package de.grundid.drinker.menu;
 
-import de.grundid.drinker.utils.Utils;
+import java.util.ArrayList;
+import java.util.List;
 
 public class DrinkModel implements SimpleDrink {
 
 	private String name;
 	private String brand;
-	private int price;
-	private Integer volume;
 	private String category;
 	private String description;
 	private String locationId;
+	private List<VolumePrice> volumePrices;
 
-	public Double getPricePerVolume() {
-		return Utils.getPricePerVolume(price, volume);
+	public void addVolumePrice(VolumePrice volumePrice) {
+		if (volumePrices == null) {
+			volumePrices = new ArrayList<>();
+		}
+		volumePrices.add(volumePrice);
+	}
+
+	public List<VolumePrice> getVolumePrices() {
+		return volumePrices;
+	}
+
+	public void setVolumePrices(List<VolumePrice> volumePrices) {
+		this.volumePrices = volumePrices;
 	}
 
 	public String getName() {
@@ -30,22 +41,6 @@ public class DrinkModel implements SimpleDrink {
 
 	public void setBrand(String brand) {
 		this.brand = brand;
-	}
-
-	public int getPrice() {
-		return price;
-	}
-
-	public void setPrice(int price) {
-		this.price = price;
-	}
-
-	public Integer getVolume() {
-		return volume;
-	}
-
-	public void setVolume(Integer volume) {
-		this.volume = volume;
 	}
 
 	public String getCategory() {

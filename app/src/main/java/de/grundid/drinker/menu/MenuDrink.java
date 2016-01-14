@@ -1,12 +1,14 @@
 package de.grundid.drinker.menu;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class MenuDrink implements SimpleDrink {
+public class MenuDrink implements SimpleDrink, Parcelable {
 
 	private String drinkId;
 	private String name;
@@ -15,6 +17,32 @@ public class MenuDrink implements SimpleDrink {
 	private String category;
 	private long modifiedDate;
 	private List<VolumePrice> volumePrices;
+
+	public MenuDrink() {
+	}
+
+	protected MenuDrink(Parcel in) {
+		drinkId = in.readString();
+		name = in.readString();
+		brand = in.readString();
+		description = in.readString();
+		category = in.readString();
+		modifiedDate = in.readLong();
+		volumePrices = in.readArrayList(MenuDrink.class.getClassLoader());
+	}
+
+	public static final Creator<MenuDrink> CREATOR = new Creator<MenuDrink>() {
+
+		@Override
+		public MenuDrink createFromParcel(Parcel in) {
+			return new MenuDrink(in);
+		}
+
+		@Override
+		public MenuDrink[] newArray(int size) {
+			return new MenuDrink[size];
+		}
+	};
 
 	public List<VolumePrice> getVolumePrices() {
 		return volumePrices;
@@ -82,5 +110,19 @@ public class MenuDrink implements SimpleDrink {
 
 	public void setModifiedDate(long modifiedDate) {
 		this.modifiedDate = modifiedDate;
+	}
+
+	@Override public int describeContents() {
+		return 0;
+	}
+
+	@Override public void writeToParcel(Parcel dest, int flags) {
+		dest.writeString(drinkId);
+		dest.writeString(name);
+		dest.writeString(brand);
+		dest.writeString(description);
+		dest.writeString(category);
+		dest.writeLong(modifiedDate);
+		dest.writeList(volumePrices);
 	}
 }

@@ -1,39 +1,18 @@
 package de.grundid.drinker.menu;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.text.InputType;
-import android.text.method.DigitsKeyListener;
 import android.view.View;
-import android.widget.AutoCompleteTextView;
-import android.widget.EditText;
-import android.widget.Toast;
-
-import com.koushikdutta.async.future.FutureCallback;
-import com.koushikdutta.ion.Ion;
-import com.koushikdutta.ion.Response;
+import de.grundid.drinker.Category;
+import de.grundid.drinker.R;
+import de.grundid.drinker.utils.DatedResponse;
+import de.grundid.drinker.utils.IonLoaderHelper;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-
-import de.grundid.drinker.Category;
-import de.grundid.drinker.Config;
-import de.grundid.drinker.EditDrinkActivity;
-import de.grundid.drinker.R;
-import de.grundid.drinker.StringListAdapter;
-import de.grundid.drinker.utils.DatedResponse;
-import de.grundid.drinker.utils.DrinkModelHelper;
-import de.grundid.drinker.utils.IonLoaderHelper;
-import de.grundid.drinker.utils.PreferencesUtils;
-
-import static android.os.SystemClock.sleep;
 
 public class TemplateDrinkActivity extends AppCompatActivity {
 

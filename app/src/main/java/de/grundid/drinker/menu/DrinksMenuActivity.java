@@ -129,7 +129,7 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 	public void onItemClick(MenuDrink item) {
 		Intent addDrinkIntent = new Intent(DrinksMenuActivity.this, EditDrinkActivity.class);
 		addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, menu.getLocationId());
-		//addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_DRINK, item);
+		addDrinkIntent.putExtra(EditDrinkActivity.EXTRA_DRINK, item);
 		startActivityForResult(addDrinkIntent, 1000);
 	}
 

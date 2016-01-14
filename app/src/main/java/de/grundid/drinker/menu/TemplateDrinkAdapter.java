@@ -1,22 +1,13 @@
 package de.grundid.drinker.menu;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.view.menu.MenuView;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
-
-import java.util.List;
-
 import de.grundid.drinker.Category;
-import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.R;
 import de.grundid.drinker.utils.EmptyStateAdapter;
+
+import java.util.List;
 
 public class TemplateDrinkAdapter extends EmptyStateAdapter {
 
