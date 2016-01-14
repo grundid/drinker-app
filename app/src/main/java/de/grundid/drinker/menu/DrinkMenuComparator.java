@@ -13,7 +13,7 @@ public class DrinkMenuComparator implements Comparator<MenuDrink> {
 	@Override public int compare(MenuDrink lhs, MenuDrink rhs) {
 		int c = lhs.getCategory().compareTo(rhs.getCategory());
 		if (c == 0) {
-			if (!byName) {
+/*	FIXME		if (!byName) {
 				if (!Double.isNaN(lhs.getPricePerVolume())) {
                     if (!Double.isNaN(rhs.getPricePerVolume())) {
                         if (lhs.getPricePerVolume() < rhs.getPricePerVolume()) {
@@ -35,7 +35,7 @@ public class DrinkMenuComparator implements Comparator<MenuDrink> {
                         c = 1;
                     }
                 }
-			}
+			}*/
 
 			if (c == 0) {
 				c = lhs.getName().compareTo(rhs.getName());

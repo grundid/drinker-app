@@ -4,14 +4,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.TextView;
-import android.widget.Toast;
+import de.grundid.drinker.R;
+import de.grundid.drinker.Utils;
 
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.util.Locale;
-
-import de.grundid.drinker.R;
-import de.grundid.drinker.Utils;
 
 public class DrinkTemplateViewHolder extends RecyclerView.ViewHolder {
 
@@ -38,9 +36,9 @@ public class DrinkTemplateViewHolder extends RecyclerView.ViewHolder {
         brand.setVisibility(Utils.hasText(drink.getBrand()) ? View.VISIBLE : View.GONE);
         brand.setText(drink.getBrand());
         name.setText(drink.getName());
-        price.setText(priceFormat.format((double) drink.getPrice() / 100));
-        volume.setText(volumeFormat.format((double)drink.getVolume() / 1000));
-        volume.setVisibility(drink.getVolume() != null ? View.VISIBLE : View.GONE);
+/*        price.setText(priceFormat.format((double) drink.getPrice() / 100));
+		volume.setText(volumeFormat.format((double)drink.getVolume() / 1000));
+        volume.setVisibility(drink.getVolume() != null ? View.VISIBLE : View.GONE);*/
 
         if (Utils.hasText(drink.getDescription())) {
             description.setText(drink.getDescription());

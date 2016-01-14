@@ -13,33 +13,21 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.*;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 import com.koushikdutta.ion.builder.Builders;
-
 import de.grundid.android.utils.AndroidHelper;
 import de.grundid.drinker.menu.DrinkModel;
 import de.grundid.drinker.menu.DrinkViewHolder;
-import de.grundid.drinker.menu.Menu;
 import de.grundid.drinker.menu.MenuDrink;
-import de.grundid.drinker.storage.DaoManager;
-import de.grundid.drinker.utils.AnalyticsUtils;
-import de.grundid.drinker.utils.CategoryHelper;
-import de.grundid.drinker.utils.DatedResponse;
-import de.grundid.drinker.utils.DrinkModelHelper;
-import de.grundid.drinker.utils.PreferencesUtils;
-import de.grundid.drinker.utils.Suggest;
+import de.grundid.drinker.utils.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 public class EditDrinkActivity extends AppCompatActivity {
 
@@ -150,9 +138,9 @@ public class EditDrinkActivity extends AppCompatActivity {
             drinkName.setText(menuDrink.getName());
             drinkBrand.setText(menuDrink.getBrand());
             drinkDescription.setText(menuDrink.getDescription());
-            drinkPrice.setText(priceFormat.format((double) menuDrink.getPrice() / 100));
-            if (menuDrink.getVolume() != null)
-                drinkVolume.setText("" + menuDrink.getVolume());
+			// FIXME            drinkPrice.setText(priceFormat.format((double) menuDrink.getPrice() / 100));
+/*    FIXME        if (menuDrink.getVolume() != null)
+				drinkVolume.setText("" + menuDrink.getVolume());*/
             categorySpinner.setSelection(categories.indexOfCategory(menuDrink.getCategory()));
         }
     }

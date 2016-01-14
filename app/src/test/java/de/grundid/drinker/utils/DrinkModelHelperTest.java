@@ -50,7 +50,7 @@ public class DrinkModelHelperTest {
 	private static DrinkModel create(String name, Category cat, Integer price) {
 		DrinkModel drinkModel = new DrinkModel();
 		drinkModel.setName(name);
-		drinkModel.setCategory(cat);
+		drinkModel.setCategory(cat.name());
 		drinkModel.setPrice(price);
 		return drinkModel;
 	}

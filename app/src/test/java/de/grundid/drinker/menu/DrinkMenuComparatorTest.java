@@ -1,13 +1,12 @@
 package de.grundid.drinker.menu;
 
-import de.grundid.drinker.Category;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 public class DrinkMenuComparatorTest {
 
-	private DrinkMenuComparator comparator = new DrinkMenuComparator();
+	private DrinkMenuComparator comparator = new DrinkMenuComparator(true);
 
 	@Test
 	public void itShouldCompare() throws Exception {
@@ -23,8 +22,8 @@ public class DrinkMenuComparatorTest {
 		menuDrink.setCategory("beer");
 		menuDrink.setName(name);
 		menuDrink.setDrinkId(drinkId);
-		menuDrink.setPrice(price);
-		menuDrink.setVolume(volume);
+/*		menuDrink.setPrice(price);
+		menuDrink.setVolume(volume);*/
 		return menuDrink;
 	}
 }

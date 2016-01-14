@@ -1,6 +1,5 @@
 package de.grundid.drinker.menu;
 
-import de.grundid.drinker.Category;
 import de.grundid.drinker.utils.Utils;
 
 public class DrinkModel implements SimpleDrink {
@@ -13,7 +12,6 @@ public class DrinkModel implements SimpleDrink {
 	private String description;
 	private String locationId;
 
-	@Override
 	public Double getPricePerVolume() {
 		return Utils.getPricePerVolume(price, volume);
 	}
