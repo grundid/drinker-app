@@ -7,20 +7,16 @@ import de.grundid.drinker.R;
 
 import java.util.List;
 
-public class EmptyStateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class OldEmptyStateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
-	public static final int TYPE_EMPTY = 0;
-	protected List<ListElement> elements;
+	private static final int TYPE_EMPTY = 0;
+	protected List<Object> elements;
 
-	public EmptyStateAdapter(List<ListElement> elements, int emptyStateResourceId) {
+	public OldEmptyStateAdapter(List<Object> elements, int emptyStateResourceId) {
 		this.elements = elements;
 		if (this.elements.isEmpty()) {
 			this.elements.add(new EmptyElement(emptyStateResourceId));
 		}
-	}
-
-	protected <T> T getElementsObject(int position) {
-		return (T)elements.get(position).getElement();
 	}
 
 	@Override public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -38,7 +34,7 @@ public class EmptyStateAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
 	}
 
 	@Override public int getItemViewType(int position) {
-		return elements.get(position).getType();
+		return super.getItemViewType(position);
 	}
 
 	@Override public int getItemCount() {

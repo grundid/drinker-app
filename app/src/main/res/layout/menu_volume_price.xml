@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:gravity="right"
+              android:orientation="horizontal"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:layout_marginTop="4dp"
+              android:layout_marginBottom="4dp">
+
+    <TextView
+            android:id="@+id/drinkPricePerVolume"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:gravity="right"
+            android:text="1,50 € / 100ml"/>
+
+    <TextView
+            android:id="@+id/drinkVolume"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"
+            android:gravity="right"
+            android:text="0,5l"/>
+
+    <TextView
+            android:id="@+id/drinkPrice"
+            android:layout_width="60dp"
+            android:layout_height="wrap_content"
+            android:gravity="right"
+            android:textStyle="bold"
+            android:text="3,50 €"/>
+
+
+</LinearLayout>

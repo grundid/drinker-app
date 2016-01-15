@@ -1,25 +1,15 @@
 package de.grundid.drinker.menu;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.support.v7.view.menu.MenuView;
-import android.support.v7.widget.PopupMenu;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
+import de.grundid.drinker.Category;
+import de.grundid.drinker.R;
+import de.grundid.drinker.utils.OldEmptyStateAdapter;
 
 import java.util.List;
 
-import de.grundid.drinker.Category;
-import de.grundid.drinker.EditDrinkActivity;
-import de.grundid.drinker.R;
-import de.grundid.drinker.utils.EmptyStateAdapter;
-
-public class TemplateDrinkAdapter extends EmptyStateAdapter {
+public class TemplateDrinkAdapter extends OldEmptyStateAdapter {
 
     private static final int TYPE_SECTION = 1;
     private static final int TYPE_DRINK = 2;
@@ -51,11 +41,14 @@ public class TemplateDrinkAdapter extends EmptyStateAdapter {
             final DrinkTemplateViewHolder drinkViewHolder = (DrinkTemplateViewHolder) holder;
             final MenuDrinkContainer menuDrink = (MenuDrinkContainer) elements.get(position);
             drinkViewHolder.update(menuDrink.getDrink(), menuDrink.isChecked());
-            drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, this, menuDrink));
-            drinkViewHolder.itemView.findViewById(R.id.add_new_template).setOnClickListener(new TemplateAddDrinkContainerListener(templateDrinkActivity, this, elements, menuDrink));
-        } else if (holder instanceof SectionViewHolder) {
-            ((SectionViewHolder) holder).update((Category) elements.get(position));
-        } else {
+			drinkViewHolder.itemView.setOnClickListener(
+					new TemplateAddDrinkListener(templateDrinkActivity, this, menuDrink));
+			drinkViewHolder.itemView.findViewById(R.id.add_new_template).setOnClickListener(
+					new TemplateAddDrinkContainerListener(templateDrinkActivity, this, elements, menuDrink));
+		}
+		else if (holder instanceof SectionViewHolder) {
+			//((SectionViewHolder) holder).update((Category) elements.get(position));
+		} else {
             super.onBindViewHolder(holder, position);
         }
     }

@@ -22,13 +22,9 @@ import de.grundid.drinker.storage.Location;
 import de.grundid.drinker.utils.AnalyticsUtils;
 import de.grundid.drinker.utils.DatedResponse;
 import de.grundid.drinker.utils.IonLoaderHelper;
+import de.grundid.drinker.utils.ListElement;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class DrinksMenuActivity extends AppCompatActivity implements ItemClickListener<MenuDrink>,
 		SwipeRefreshLayout.OnRefreshListener {
@@ -102,23 +98,26 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 	}
 
 	private void sortMenu(boolean byName) {
-		Map<String, List<MenuDrink>> drinks = new HashMap<>();
+		Map<Category, List<MenuDrink>> drinks = new HashMap<>();
 		for (MenuDrink menuDrink : menu.getDrinks()) {
-
-			List<MenuDrink> menuDrinks = drinks.get(menuDrink.getCategory());
-			if(menuDrinks==null){
+			Category drinkCategory = Category.valueOf(menuDrink.getCategory());
+			List<MenuDrink> menuDrinks = drinks.get(drinkCategory);
+			if (menuDrinks == null) {
 				menuDrinks = new ArrayList<>();
-				drinks.put(menuDrink.getCategory(),menuDrinks);
+				drinks.put(drinkCategory, menuDrinks);
 			}
 			menuDrinks.add(menuDrink);
 		}
-
+		List<ListElement> categoryWithDrinks = new ArrayList<>();
+		for (Map.Entry<Category, List<MenuDrink>> entry : drinks.entrySet()) {
+			categoryWithDrinks.add(new ListElement(1, new CategoryWithDrinksModel(entry.getKey(), entry.getValue())));
+		}
 		if (drinkAdapter == null) {
-			drinkAdapter = new DrinkAdapter(drinks, DrinksMenuActivity.this, lastVisit);
+			drinkAdapter = new DrinkAdapter(categoryWithDrinks, DrinksMenuActivity.this, lastVisit);
 			recyclerView.setAdapter(drinkAdapter);
 		}
 		else {
-			drinkAdapter.setDrinks(drinks);
+			drinkAdapter.setDrinks(categoryWithDrinks);
 		}
 	}
 
@@ -152,7 +151,7 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		// Set the dialog title
 		builder.setTitle("Getränkesortierung")
-				.setItems(new String[]{"Nach Preis", "Nach Name"}, new DialogInterface.OnClickListener() {
+				.setItems(new String[] { "Nach Preis", "Nach Name" }, new DialogInterface.OnClickListener() {
 
 					@Override
 					public void onClick(DialogInterface dialog, int which) {

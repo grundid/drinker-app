@@ -1,14 +1,18 @@
 package de.grundid.drinker.menu;
 
+import java.util.List;
+
 public interface SimpleDrink {
 
-    String getName();
+	String getName();
 
-    String getBrand();
+	String getBrand();
 
-    String getDescription();
+	String getDescription();
 
-    String getCategory();
+	String getCategory();
 
-    long getModifiedDate();
+	long getModifiedDate();
+
+	List<VolumePrice> getVolumePrices();
 }

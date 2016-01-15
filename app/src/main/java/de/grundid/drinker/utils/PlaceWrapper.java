@@ -3,6 +3,7 @@ package de.grundid.drinker.utils;
 import android.os.Parcel;
 import android.os.Parcelable;
 import com.google.android.gms.location.places.Place;
+import de.grundid.drinker.LocationModel;
 
 public class PlaceWrapper implements Parcelable {
 
@@ -11,6 +12,14 @@ public class PlaceWrapper implements Parcelable {
 	private String address;
 	private double lat;
 	private double lon;
+
+	public PlaceWrapper(LocationModel locationModel) {
+		this.id = locationModel.getPlaceId();
+		this.name = locationModel.getName();
+		this.address = locationModel.getAddress();
+		this.lat = locationModel.getLatitude();
+		this.lon = locationModel.getLongitude();
+	}
 
 	public PlaceWrapper(Place place) {
 		this.id = place.getId();

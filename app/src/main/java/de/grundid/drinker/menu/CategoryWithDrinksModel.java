@@ -1,32 +1,24 @@
 package de.grundid.drinker.menu;
 
+import de.grundid.drinker.Category;
+
 import java.util.List;
 
-/**
- * Created by lukas on 14.01.16.
- */
 public class CategoryWithDrinksModel {
-    private String name;
-    private List<MenuDrink> drinks;
 
-    public String getName() {
-        return name;
-    }
+	private Category category;
+	private List<MenuDrink> drinks;
 
-    public List<MenuDrink> getDrinks() {
-        return drinks;
-    }
+	public CategoryWithDrinksModel(Category category, List<MenuDrink> drinks) {
+		this.category = category;
+		this.drinks = drinks;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public Category getCategory() {
+		return category;
+	}
 
-    public void setDrinks(List<MenuDrink> drinks) {
-        this.drinks = drinks;
-    }
-
-    public CategoryWithDrinksModel(String name, List<MenuDrink> drinks) {
-        this.name = name;
-        this.drinks = drinks;
-    }
+	public List<MenuDrink> getDrinks() {
+		return drinks;
+	}
 }

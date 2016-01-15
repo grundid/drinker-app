@@ -6,23 +6,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.view.View;
 import android.widget.Toast;
-
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 import com.koushikdutta.ion.Response;
 import com.koushikdutta.ion.builder.Builders;
+import de.grundid.drinker.Config;
+import de.grundid.drinker.EditDrinkActivity;
+import de.grundid.drinker.utils.CategoryHelper;
+import de.grundid.drinker.utils.Suggest;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import de.grundid.drinker.Config;
-import de.grundid.drinker.EditDrinkActivity;
-import de.grundid.drinker.utils.CategoryHelper;
-import de.grundid.drinker.utils.Suggest;
 
 public class AddDrinkListener implements View.OnClickListener {
 
