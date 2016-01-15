@@ -84,7 +84,15 @@ public class AddDrinkListener implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+		Intent addDrinkIntentSingle = new Intent(activity,
+				EditDrinkActivity.class);
+		addDrinkIntentSingle
+				.putExtra(EditDrinkActivity.EXTRA_LOCATION_ID, locationId);
+		activity.startActivity(addDrinkIntentSingle);
+
+		/*
+
+		AlertDialog.Builder builder = new AlertDialog.Builder(activity);
         // Set the dialog title
         builder.setTitle("Editiermodus")
                 .setItems(new String[]{"Einzeln", "Nach Vorlage"}, new DialogInterface.OnClickListener() {
@@ -102,6 +110,7 @@ public class AddDrinkListener implements View.OnClickListener {
                         }
                     }
                 });
-        builder.create().show();
-    }
+        builder.show();
+        */
+	}
 }

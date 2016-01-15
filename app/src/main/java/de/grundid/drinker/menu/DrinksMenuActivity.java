@@ -11,8 +11,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.MenuInflater;
-import android.view.MenuItem;
 import de.grundid.drinker.Category;
 import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.ItemClickListener;
@@ -108,9 +106,16 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 			}
 			menuDrinks.add(menuDrink);
 		}
+		MenuDrinkComparator menuDrinkComparator = new MenuDrinkComparator();
+		VolumePriceComparator volumePriceComparator = new VolumePriceComparator();
 		List<ListElement> categoryWithDrinks = new ArrayList<>();
 		for (Map.Entry<Category, List<MenuDrink>> entry : drinks.entrySet()) {
-			categoryWithDrinks.add(new ListElement(1, new CategoryWithDrinksModel(entry.getKey(), entry.getValue())));
+			List<MenuDrink> menuDrinks = entry.getValue();
+			for (MenuDrink menuDrink : menuDrinks) {
+				Collections.sort(menuDrink.getVolumePrices(), volumePriceComparator);
+			}
+			Collections.sort(menuDrinks, menuDrinkComparator);
+			categoryWithDrinks.add(new ListElement(1, new CategoryWithDrinksModel(entry.getKey(), menuDrinks)));
 		}
 		if (drinkAdapter == null) {
 			drinkAdapter = new DrinkAdapter(categoryWithDrinks, DrinksMenuActivity.this, lastVisit);
@@ -129,24 +134,24 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		startActivityForResult(addDrinkIntent, 1000);
 	}
 
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {
-		switch (item.getItemId()) {
-			case R.id.action_sort: {
-				createDialog().show();
-				return true;
+	/*	@Override
+		public boolean onOptionsItemSelected(MenuItem item) {
+			switch (item.getItemId()) {
+				case R.id.action_sort: {
+					createDialog().show();
+					return true;
+				}
 			}
+			return super.onOptionsItemSelected(item);
 		}
-		return super.onOptionsItemSelected(item);
-	}
 
-	@Override
-	public boolean onCreateOptionsMenu(android.view.Menu menu) {
-		MenuInflater inflater = getMenuInflater();
-		inflater.inflate(R.menu.drinkmenu_menu, menu);
-		return super.onCreateOptionsMenu(menu);
-	}
-
+		@Override
+		public boolean onCreateOptionsMenu(android.view.Menu menu) {
+			MenuInflater inflater = getMenuInflater();
+			inflater.inflate(R.menu.drinkmenu_menu, menu);
+			return super.onCreateOptionsMenu(menu);
+		}
+	*/
 	public Dialog createDialog() {
 		AlertDialog.Builder builder = new AlertDialog.Builder(this);
 		// Set the dialog title
