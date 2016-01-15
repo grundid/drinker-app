@@ -4,27 +4,25 @@ import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.R;
 import de.grundid.drinker.utils.DrinkModelHelper;
 
 public class TemplateAddDrinkListener implements View.OnClickListener {
 
-    private TemplateDrinkActivity activity;
-    private MenuDrinkContainer menuDrink;
-    private TemplateDrinkAdapter adapter;
+	private TemplateDrinkActivity activity;
+	private MenuDrinkContainer menuDrink;
+	private TemplateDrinkAdapter adapter;
 
-    public TemplateAddDrinkListener(TemplateDrinkActivity activity, TemplateDrinkAdapter templateDrinkAdapter, MenuDrinkContainer menuDrink) {
-        this.activity = activity;
-        this.menuDrink = menuDrink;
-        this.adapter = templateDrinkAdapter;
-    }
-    
+	public TemplateAddDrinkListener(TemplateDrinkActivity activity, TemplateDrinkAdapter templateDrinkAdapter,
+			MenuDrinkContainer menuDrink) {
+		this.activity = activity;
+		this.menuDrink = menuDrink;
+		this.adapter = templateDrinkAdapter;
+	}
+
 	@Override
 	public void onClick(View v) {
 		final View inputFields = LayoutInflater.from(activity).inflate(R.layout.template_popup, null);

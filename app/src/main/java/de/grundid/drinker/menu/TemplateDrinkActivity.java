@@ -6,7 +6,6 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import de.grundid.drinker.Category;
 import de.grundid.drinker.EditDrinkActivity;
 import de.grundid.drinker.R;
 import de.grundid.drinker.utils.DatedResponse;
