@@ -1,14 +1,8 @@
 package de.grundid.drinker.utils;
 
-public class EmptyElement {
+public class EmptyElement extends ListElement {
 
-	private int textResourceId;
-
-	public EmptyElement(int textResourceId) {
-		this.textResourceId = textResourceId;
-	}
-
-	public int getTextResourceId() {
-		return textResourceId;
+	public EmptyElement(Integer textResourceId) {
+		super(EmptyStateAdapter.TYPE_EMPTY, textResourceId);
 	}
 }

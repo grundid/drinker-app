@@ -15,6 +15,6 @@ public class EmptyStateViewHolder extends RecyclerView.ViewHolder {
 	}
 
 	public void update(EmptyElement emptyElement) {
-		textView.setText(emptyElement.getTextResourceId());
+		textView.setText((Integer)emptyElement.getElement());
 	}
 }

@@ -5,11 +5,11 @@ import android.view.LayoutInflater;
 import android.view.ViewGroup;
 import de.grundid.drinker.Category;
 import de.grundid.drinker.R;
-import de.grundid.drinker.utils.EmptyStateAdapter;
+import de.grundid.drinker.utils.OldEmptyStateAdapter;
 
 import java.util.List;
 
-public class TemplateDrinkAdapter extends EmptyStateAdapter {
+public class TemplateDrinkAdapter extends OldEmptyStateAdapter {
 
     private static final int TYPE_SECTION = 1;
     private static final int TYPE_DRINK = 2;
@@ -43,8 +43,8 @@ public class TemplateDrinkAdapter extends EmptyStateAdapter {
             drinkViewHolder.update(menuDrink.getDrink(), menuDrink.isChecked());
             drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, menuDrink, this));
         } else if (holder instanceof SectionViewHolder) {
-            ((SectionViewHolder) holder).update((Category) elements.get(position));
-        } else {
+			//((SectionViewHolder) holder).update((Category) elements.get(position));
+		} else {
             super.onBindViewHolder(holder, position);
         }
     }

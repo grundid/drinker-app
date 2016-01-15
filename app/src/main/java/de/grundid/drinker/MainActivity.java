@@ -29,19 +29,24 @@ import de.grundid.drinker.location.LocationAdapter;
 import de.grundid.drinker.menu.DrinksMenuActivity;
 import de.grundid.drinker.menu.Menu;
 import de.grundid.drinker.storage.DaoManager;
+import de.grundid.drinker.storage.Location;
 import de.grundid.drinker.utils.AnalyticsUtils;
+import de.grundid.drinker.utils.ListElement;
 import de.grundid.drinker.utils.PlaceWrapper;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements ItemClickListener<String> {
+public class MainActivity extends AppCompatActivity
+		implements ItemClickListener<String>, DeleteRequestListener<Location> {
 
 	private static final int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
 	private static final int PLACE_PICKER_REQUEST = 1;
 	private static final int NEW_LOCATION_REQUEST = 2;
 	private RecyclerView recyclerView;
 	private ProgressDialog progressDialog;
+	private LocationAdapter locationAdapter;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -58,21 +63,35 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 	@Override protected void onStart() {
 		super.onStart();
 		checkPlayServices();
-		List<?> locations = DaoManager.with(this).selectAllLocations();
-		recyclerView.setAdapter(new LocationAdapter((List<Object>)locations, this, this));
+		loadData();
 		AnalyticsUtils.with(this).sendScreen("/start");
-		if(progressDialog!=null){
+		if (progressDialog != null) {
 			progressDialog.dismiss();
-			progressDialog=null;
+			progressDialog = null;
+		}
+	}
+
+	private void loadData() {
+		List<Location> locations = DaoManager.with(this).selectAllLocations();
+		List<ListElement> locationElements = new ArrayList<>(locations.size());
+		for (Location location : locations) {
+			locationElements.add(new ListElement(LocationAdapter.TYPE_LOCATION, location));
+		}
+		if (locationAdapter == null) {
+			locationAdapter = new LocationAdapter(locationElements, this, this);
+			recyclerView.setAdapter(locationAdapter);
+		}
+		else {
+			locationAdapter.updateLocations(locationElements);
 		}
 	}
 
 	@Override
 	protected void onResume() {
 		super.onResume();
-		if(progressDialog!=null){
+		if (progressDialog != null) {
 			progressDialog.dismiss();
-			progressDialog=null;
+			progressDialog = null;
 		}
 	}
 
@@ -138,13 +157,11 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 		fab.setOnClickListener(new View.OnClickListener() {
 
 			@Override public void onClick(View v) {
-
 				progressDialog = new ProgressDialog(MainActivity.this);
 				progressDialog.setCancelable(false);
 				progressDialog.setIndeterminate(true);
 				progressDialog.setProgressStyle(ProgressDialog.STYLE_SPINNER);
 				progressDialog.show();
-
 				PlacePicker.IntentBuilder builder = new PlacePicker.IntentBuilder();
 				try {
 					startActivityForResult(builder.build(MainActivity.this), PLACE_PICKER_REQUEST);
@@ -194,5 +211,18 @@ public class MainActivity extends AppCompatActivity implements ItemClickListener
 		MenuInflater inflater = getMenuInflater();
 		inflater.inflate(R.menu.main_menu, menu);
 		return super.onCreateOptionsMenu(menu);
+	}
+
+	@Override public void requestDelete(final Location location) {
+		AlertDialog.Builder builder = new AlertDialog.Builder(this);
+		builder.setTitle("Location löschen").setMessage("Möchtest du diese Location löschen?")
+				.setPositiveButton(
+						"Ja", new DialogInterface.OnClickListener() {
+
+							@Override public void onClick(DialogInterface dialog, int which) {
+								DaoManager.with(MainActivity.this).deleteLocation(location.getPlaceId());
+								loadData();
+							}
+						}).setNegativeButton("Nein", null).create().show();
 	}
 }

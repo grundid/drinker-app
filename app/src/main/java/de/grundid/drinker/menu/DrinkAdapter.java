@@ -6,14 +6,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import de.grundid.drinker.Category;
 import de.grundid.drinker.ItemClickListener;
 import de.grundid.drinker.R;
-import de.grundid.drinker.utils.EmptyElement;
 import de.grundid.drinker.utils.EmptyStateAdapter;
-import de.grundid.drinker.utils.EmptyStateViewHolder;
+import de.grundid.drinker.utils.ListElement;
 
-import java.util.*;
+import java.util.List;
 
 public class DrinkAdapter extends EmptyStateAdapter {
 
@@ -23,19 +21,8 @@ public class DrinkAdapter extends EmptyStateAdapter {
 	private final ItemClickListener<MenuDrink> itemClickListener;
 	private final long lastVisit;
 
-    static DrinkAdapter getInstance(Map<String, List<MenuDrink>> drinks, ItemClickListener<MenuDrink> itemClickListener, long lastVisit){
-
-        List<Object> categories = new ArrayList<>();
-
-        for (Map.Entry<String, List<MenuDrink>> entry : drinks.entrySet()) {
-            categories.add((Object)new CategoryWithDrinksModel(entry.getKey(), entry.getValue()));
-        }
-        return new DrinkAdapter(categories, itemClickListener, lastVisit);
-    }
-
-	private DrinkAdapter(List<Object> drinks, ItemClickListener<MenuDrink> itemClickListener, long lastVisit) {
-
-		super(drinks, R.string.empty_state_drinksmenu);
+	public DrinkAdapter(List<ListElement> elements, ItemClickListener<MenuDrink> itemClickListener, long lastVisit) {
+		super(elements, R.string.empty_state_drinksmenu);
 		this.itemClickListener = itemClickListener;
 		this.lastVisit = lastVisit;
 	}
@@ -59,7 +46,7 @@ public class DrinkAdapter extends EmptyStateAdapter {
 	@Override public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 		if (holder instanceof DrinkViewHolder) {
 			DrinkViewHolder drinkViewHolder = (DrinkViewHolder)holder;
-			final MenuDrink menuDrink = (MenuDrink)elements.get(position);
+			final MenuDrink menuDrink = getElementsObject(position);
 			drinkViewHolder.update(menuDrink, lastVisit);
 			drinkViewHolder.getMoreButton().setOnClickListener(new View.OnClickListener() {
 
@@ -78,34 +65,18 @@ public class DrinkAdapter extends EmptyStateAdapter {
 			});
 		}
 		else if (holder instanceof SectionViewHolder) {
-			((SectionViewHolder)holder).update((Category)elements.get(position));
+			((SectionViewHolder)holder).update((CategoryWithDrinksModel)getElementsObject(position), lastVisit);
 		}
 		else if (holder instanceof FooterViewHolder) {
-			((FooterViewHolder)holder).update((Footer)elements.get(position));
+			((FooterViewHolder)holder).update((Footer)getElementsObject(position));
 		}
 		else {
 			super.onBindViewHolder(holder, position);
 		}
 	}
 
-	@Override public int getItemViewType(int position) {
-		Object object = elements.get(position);
-		if (object instanceof Category) {
-			return TYPE_SECTION;
-		}
-		else if (object instanceof MenuDrink) {
-			return TYPE_DRINK;
-		}
-		else if (object instanceof Footer) {
-			return TYPE_FOOTER;
-		}
-		else {
-			return super.getItemViewType(position);
-		}
-	}
-
-	public void setDrinks(Map<String, List<MenuDrink>> drinks) {
-		this.elements = drinks;
+	public void setDrinks(List<ListElement> elements) {
+		this.elements = elements;
 		notifyDataSetChanged();
 	}
 }

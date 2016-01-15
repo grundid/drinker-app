@@ -2,7 +2,10 @@ package de.grundid.drinker.utils;
 
 import de.grundid.drinker.Category;
 import de.grundid.drinker.menu.DrinkModel;
+import de.grundid.drinker.menu.VolumePrice;
 import org.junit.Test;
+
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -51,7 +54,9 @@ public class DrinkModelHelperTest {
 		DrinkModel drinkModel = new DrinkModel();
 		drinkModel.setName(name);
 		drinkModel.setCategory(cat.name());
-		drinkModel.setPrice(price);
+		VolumePrice volumePrice = new VolumePrice();
+		volumePrice.setPrice(price);
+		drinkModel.setVolumePrices(Collections.singletonList(volumePrice));
 		return drinkModel;
 	}
 }
