@@ -47,7 +47,6 @@ public class DrinksMenuActivity extends AppCompatActivity implements ItemClickLi
 		placeId = getPlaceIdFromIntent();
 		Location location = DaoManager.with(this).selectLocation(placeId);
 		lastVisit = location.getLastVisit();
-		//Hier wird jetzt editiert
 		fab = (FloatingActionButton)findViewById(R.id.fab);
 		swipeRefreshLayout = (SwipeRefreshLayout)findViewById(R.id.swipeRefresh);
 		swipeRefreshLayout.setOnRefreshListener(this);

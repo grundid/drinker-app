@@ -34,6 +34,7 @@ public class EditDrinkActivity extends AppCompatActivity {
 
 	public static final String EXTRA_LOCATION_ID = "EXTRA_LOCATION_ID";
 	public static final String EXTRA_DRINK = "EXTRA_DRINK";
+	public static final String EXTRA_CATEGORY = "EXTRA_CATEGORY";
 	private AutoCompleteTextView drinkName;
 	private AutoCompleteTextView drinkBrand;
 	private EditText drinkPrice;

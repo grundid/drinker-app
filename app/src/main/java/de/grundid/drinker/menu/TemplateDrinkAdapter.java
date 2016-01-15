@@ -41,7 +41,8 @@ public class TemplateDrinkAdapter extends OldEmptyStateAdapter {
             final DrinkTemplateViewHolder drinkViewHolder = (DrinkTemplateViewHolder) holder;
             final MenuDrinkContainer menuDrink = (MenuDrinkContainer) elements.get(position);
             drinkViewHolder.update(menuDrink.getDrink(), menuDrink.isChecked());
-            drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, menuDrink, this));
+            drinkViewHolder.itemView.setOnClickListener(new TemplateAddDrinkListener(templateDrinkActivity, this, menuDrink));
+            drinkViewHolder.itemView.findViewById(R.id.add_new_template).setOnClickListener(new TemplateAddDrinkContainerListener(templateDrinkActivity, this, elements, menuDrink));
         } else if (holder instanceof SectionViewHolder) {
 			//((SectionViewHolder) holder).update((Category) elements.get(position));
 		} else {
