@@ -22,7 +22,9 @@ import com.google.android.gms.common.GooglePlayServicesRepairableException;
 import com.google.android.gms.location.places.Place;
 import com.google.android.gms.location.places.ui.PlacePicker;
 import com.google.gson.reflect.TypeToken;
+import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
+import com.koushikdutta.ion.Response;
 import de.grundid.drinker.addplace.AddPlaceActivity;
 import de.grundid.drinker.addplace.NewPlace;
 import de.grundid.drinker.location.LocationAdapter;
@@ -72,7 +74,61 @@ public class MainActivity extends AppCompatActivity
 	}
 
 	private void loadData() {
-		List<Location> locations = DaoManager.with(this).selectAllLocations();
+		final List<Location> locations = DaoManager.with(this).selectAllLocations();
+		if (locations.isEmpty()) {
+			AlertDialog.Builder builder = new AlertDialog.Builder(this);
+			builder.setTitle("Willkommen").setMessage(
+					"Die Drinker App ist neu und enthält noch nicht viele Locations. "
+							+ "Möchtest du ein paar Locations aus Heilbronn mit Getränkekarte geladen?")
+					.setPositiveButton(
+							"Ja", new DialogInterface.OnClickListener() {
+
+								@Override public void onClick(DialogInterface dialog, int which) {
+									loadTopLocations();
+								}
+							}).setNegativeButton("Nein", new DialogInterface.OnClickListener() {
+
+				@Override public void onClick(DialogInterface dialog, int which) {
+					showLocations(locations);
+				}
+			}).show();
+		}
+		else {
+			showLocations(locations);
+		}
+	}
+
+	private void loadTopLocations() {
+		Ion.with(this).load(Config.BASE_URL + "/toplocations/")
+				.as(new TypeToken<List<LocationModel>>() {
+
+				})
+				.withResponse()
+				.setCallback(new FutureCallback<Response<List<LocationModel>>>() {
+
+					@Override public void onCompleted(Exception e, Response<List<LocationModel>> result) {
+						if (e == null) {
+							processTopLocations(result.getResult());
+						}
+						else {
+							Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_LONG).show();
+						}
+					}
+				});
+	}
+
+	private void processTopLocations(List<LocationModel> topLocations) {
+		DaoManager daoManager = DaoManager.with(this);
+		for (LocationModel location : topLocations) {
+			Location knownLocation = daoManager.selectLocation(location.getPlaceId());
+			if (knownLocation == null) {
+				daoManager.savePlace(new PlaceWrapper(location));
+			}
+		}
+		loadData();
+	}
+
+	private void showLocations(List<Location> locations) {
 		List<ListElement> locationElements = new ArrayList<>(locations.size());
 		for (Location location : locations) {
 			locationElements.add(new ListElement(LocationAdapter.TYPE_LOCATION, location));
