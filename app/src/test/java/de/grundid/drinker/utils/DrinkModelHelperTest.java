@@ -31,14 +31,14 @@ public class DrinkModelHelperTest {
 
 	@Test
 	public void itShouldParsePrice() throws Exception {
-		assertEquals(350, DrinkModelHelper.parseDrinkPrice("3.5").intValue());
-		assertEquals(350, DrinkModelHelper.parseDrinkPrice("3,5").intValue());
+		assertEquals(350, DrinkModelHelper.parseDrinkPrice("3.5"));
+		assertEquals(350, DrinkModelHelper.parseDrinkPrice("3,5"));
 	}
 
 	@Test
 	public void itShouldFailParsePrice() throws Exception {
-		assertNull(DrinkModelHelper.parseDrinkPrice("0"));
-		assertNull(DrinkModelHelper.parseDrinkPrice("abc"));
+		assertEquals(0, DrinkModelHelper.parseDrinkPrice("0"));
+		assertEquals(0, DrinkModelHelper.parseDrinkPrice("abc"));
 	}
 
 	@Test
@@ -53,9 +53,9 @@ public class DrinkModelHelperTest {
 	private static DrinkModel create(String name, Category cat, Integer price) {
 		DrinkModel drinkModel = new DrinkModel();
 		drinkModel.setName(name);
-		drinkModel.setCategory(cat.name());
+		drinkModel.setCategory(cat == null ? null : cat.name());
 		VolumePrice volumePrice = new VolumePrice();
-		volumePrice.setPrice(price);
+		volumePrice.setPrice(price == null ? 0 : price);
 		drinkModel.setVolumePrices(Collections.singletonList(volumePrice));
 		return drinkModel;
 	}

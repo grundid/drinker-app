@@ -5,7 +5,7 @@ import de.grundid.drinker.menu.DrinkModel;
 
 public class DrinkModelHelper {
 
-	public static Integer parseDrinkPrice(CharSequence input) {
+	public static int parseDrinkPrice(CharSequence input) {
 		try {
 			String content = input.toString().replaceAll(",", ".").trim();
 			double value = Double.parseDouble(content);
